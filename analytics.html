@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sagada Tourism Analytics</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #b3bac1;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #1e90ff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            font-size: 1.2rem;
+        }
+
+        /* Analytics Container */
+        .analytics-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .chart, .spot-visualization {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgb(235, 232, 232);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .chart h2, .spot-visualization h2 {
+            margin: 0 0 10px;
+            color: #1e90ff;
+        }
+
+        .spot {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .spot img {
+            max-width: 200px;
+            border-radius: 10px;
+            margin-right: 20px;
+        }
+
+        .spot-info {
+            flex: 1;
+        }
+
+        .spot-info h3 {
+            color: #1e90ff;
+            margin: 0 0 10px;
+        }
+
+        .spot-info p {
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* Back Button */
+        .back-button {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background: #1e90ff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background: #104e8b;
+        }
+
+        canvas {
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+        }
+
+        /* Enhanced Layout */
+        .chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chart canvas {
+            margin-top: 10px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Tourism Analytics</h1>
+        <p>Discover insights about tourist visits and trends in Sagada</p>
+    </header>
+
+    <!-- Analytics Section -->
+    <div class="analytics-container">
+        <!-- Monthly Visitor Statistics -->
+        <div class="chart">
+            <h2>Monthly Visitor Statistics</h2>
+            <canvas id="visitorChart"></canvas>
+        </div>
+
+        <!-- Age Demographics -->
+        <div class="chart">
+            <h2>Age Demographics</h2>
+            <canvas id="ageChart"></canvas>
+        </div>
+
+        <!-- Top 10 Nationalities -->
+        <div class="chart">
+            <h2>Top 10 Nationalities</h2>
+            <canvas id="originChart"></canvas>
+        </div>
+
+        <!-- Gender Demographics -->
+        <div class="chart">
+            <h2>Gender Demographics</h2>
+            <canvas id="genderChart"></canvas>
+        </div>
+
+        <!-- Spot Visualizations Section -->
+        <div class="spot-visualization">
+            <h2>Spot Visualizations</h2>
+
+            <!-- Sumaguing Cave -->
+            <div class="spot">
+                <img src="sumaguing-cave.jpg" alt="Sumaguing Cave">
+                <div class="spot-info">
+                    <h3>Sumaguing Cave</h3>
+                    <p>The most visited tourist spot known for its limestone formations and caving adventures.</p>
+                    <canvas id="sumaguingChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Blue Soil Hills -->
+            <div class="spot">
+                <img src="blue-soil.jpg" alt="Blue Soil Hills">
+                <div class="spot-info">
+                    <h3>Blue Soil Hills</h3>
+                    <p>Popular among seniors for its serene atmosphere and stunning blue-colored hills.</p>
+                    <canvas id="blueSoilChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Hanging Coffins -->
+            <div class="spot">
+                <img src="hanging-coffins.jpg" alt="Hanging Coffins">
+                <div class="spot-info">
+                    <h3>Hanging Coffins</h3>
+                    <p>Historical and cultural destination loved by families and children.</p>
+                    <canvas id="hangingCoffinsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div style="text-align: center;">
+        <a href="index.html" class="back-button">Back to Home</a>
+    </div>
+
+    <script>
+        // Monthly Visitor Statistics Chart
+        const visitorCtx = document.getElementById('visitorChart').getContext('2d');
+        new Chart(visitorCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Visitors',
+                    data: [500, 600, 800, 1000, 1500, 2000, 1800, 1700, 1400, 1200, 1000, 900],
+                    borderColor: '#1e90ff',
+                    fill: true,
+                    backgroundColor: 'rgba(30, 144, 255, 0.2)',
+                    tension: 0.3
+                }]
+            }
+        });
+
+        // Age Demographics Chart
+        const ageCtx = document.getElementById('ageChart').getContext('2d');
+        new Chart(ageCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Children (3-17)', 'Adults (18-59)', 'Seniors (60+)'],
+                datasets: [{
+                    label: 'Age Demographics',
+                    data: [15, 70, 15],
+                    backgroundColor: ['#1e90ff', '#87cefa', '#104e8b']
+                }]
+            }
+        });
+
+        // Top 10 Nationalities Chart
+        const originCtx = document.getElementById('originChart').getContext('2d');
+        new Chart(originCtx, {
+            type: 'bar',
+            data: {
+                labels: ['USA', 'Japan', 'China', 'Australia', 'UK', 'Germany', 'Canada', 'South Korea', 'India', 'France'],
+                datasets: [{
+                    label: 'Visitor Count',
+                    data: [1200, 1100, 1050, 1000, 950, 900, 850, 800, 750, 700],
+                    backgroundColor: ['#1e90ff', '#87cefa', '#4682b4', '#00bfff', '#104e8b', '#1e90ff', '#87cefa', '#4682b4', '#00bfff', '#104e8b']
+                }]
+            }
+        });
+
+        // Gender Demographics Chart
+        const genderCtx = document.getElementById('genderChart').getContext('2d');
+        new Chart(genderCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Male', 'Female'],
+                datasets: [{
+                    data: [50, 50],
+                    backgroundColor: ['#1e90ff', '#87cefa']
+                }]
+            }
+        });
+
+        // Sumaguing Cave Chart
+        const sumaguingCtx = document.getElementById('sumaguingChart').getContext('2d');
+        new Chart(sumaguingCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Children (3-17)', 'Adults (18-59)', 'Seniors (60+)'],
+                datasets: [{
+                    label: 'Visitors by Age',
+                    data: [10, 80, 10],
+                    backgroundColor: '#1e90ff'
+                }]
+            }
+        });
+
+        // Blue Soil Hills Chart
+        const blueSoilCtx = document.getElementById('blueSoilChart').getContext('2d');
+        new Chart(blueSoilCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Children (3-17)', 'Adults (18-59)', 'Seniors (60+)'],
+                datasets: [{
+                    data: [10, 20, 70],
+                    backgroundColor: ['#1e90ff', '#87cefa', '#104e8b']
+                }]
+            }
+        });
+
+        // Hanging Coffins Chart
+        const hangingCoffinsCtx = document.getElementById('hangingCoffinsChart').getContext('2d');
+        new Chart(hangingCoffinsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Children (3-17)', 'Adults (18-59)', 'Seniors (60+)'],
+                datasets: [{
+                    data: [60, 30, 10],
+                    backgroundColor: ['#1e90ff', '#00bfff', '#104e8b']
+                }]
+            }
+        });
+    </script>
+
+</body>
+</html>

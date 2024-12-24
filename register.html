@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tourist Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: block;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tourist Registration</h1>
+
+        <form id="registrationForm">
+            <label>Are you registering for a group?</label>
+            <select id="groupRegistration" required>
+                <option value="">Select an option</option>
+                <option value="individual">Individual</option>
+                <option value="group">Group</option>
+            </select>
+
+            <div id="individualForm" style="display:none;">
+                <label>Full Name:</label>
+                <input type="text" id="fullName" placeholder="Enter your full name" required>
+
+                <label>Date of Birth:</label>
+                <input type="date" id="dateOfBirth" required>
+
+                <label>Sex:</label>
+                <select id="sex" required>
+                    <option value="">Select sex</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+
+                <label>Country of Origin:</label>
+                <select id="country" required>
+                    <option value="">Select Country</option>
+                    <!-- Additional countries listed alphabetically -->
+                </select>
+
+                <label>Region:</label>
+                <select id="region" required>
+                    <option value="">Select region</option>
+                </select>
+
+                <label>Contact Number:</label>
+                <input type="text" id="contactNumber" placeholder="Enter your contact number" required>
+
+                <label>Email:</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+
+                <label>Upload Photo:</label>
+                <input type="file" id="uploadPhoto" accept="image/*" required>
+            </div>
+
+            <div id="groupForm" style="display:none;">
+                <label>Group Name:</label>
+                <input type="text" id="groupName" placeholder="Enter group name" required>
+
+                <label>Number of Members:</label>
+                <input type="number" id="groupSize" placeholder="Enter the number of members" required>
+
+                <div id="groupMembers"></div>
+
+                <label>Sex:</label>
+                <select id="sex" required>
+                    <option value="">Select sex</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+
+                <label>Country of Origin:</label>
+                <select id="groupCountry" required>
+                    <option value="">Select Country</option>
+                    <!-- Additional countries listed alphabetically -->
+                </select>
+
+                <label>Region:</label>
+                <select id="groupRegion" required>
+                    <option value="">Select region</option>
+                </select>
+
+                <label>Contact Number:</label>
+                <input type="text" id="groupContact" placeholder="Enter contact number (or select Not Applicable)" required>
+
+                <label>Email:</label>
+                <input type="email" id="groupEmail" placeholder="Enter email (or select Not Applicable)" required>
+
+                <label>Upload Group Photo:</label>
+                <input type="file" id="uploadGroupPhoto" accept="image/*" required>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <script>
+        const countryList = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", 
+        "Bahamas, The", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin(Dahomey)", "Bolovia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkunia Faso", "Burma", "Burundi", 
+        "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Cayman Islands, The", "Central African Rebuplican", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic of the", "Congo, Republic of the", "Cook Islands", "Costa Rica", "Cote d'Ivoire (Ivory Coast)", "Crotia", "Cuba", "Cyprus", "Czech Republic",
+        "Denmark", "Djibouti", "Dominica", "Dominican Republic",
+        "East Timor (Timor-Leste)", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France",
+        "Gabon", "Gambia, The", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana",
+        "Haiti", "Holy See", "Honduras", "Hungary", 
+        "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy",
+        "Jamaica", "Japan", "Jordan",
+        "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kosovo", "Kuwait", "Kyrgyzstan",
+        "Laos", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
+        "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", "Micronesia, Federated States of", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar",
+        "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Macedonia", "Norway",
+        "Oman",
+        "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal",
+        "Qatar",
+        "Romania", "Russia", "Rwanda",
+        "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Mariano", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzereland", "Syria",
+        "Tajikistan", "Tanzania", "Thailand", "Togo", "Tonga", "Trinidad and Tobago", "Tunasia", "Turkey", "Turkmenistan", "Tuvalu",
+        "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan",
+        "Vanuata", "Venezuela", "Vietnam",
+        "Yemen",
+        "Zambia", "Zimbabwe"];
+        const philippinesRegions = ["Region I", "Region II", "Region III", "Region IV", "Region V", "Region VI", "Region VII", "Region VIII", "Region IX", "Region X", "Region XI", "Region XII", "Region XIII", "NCR", "CAR", "BARMM", "MIMAROPA"];
+
+        // Populate country dropdowns
+        const countryDropdowns = [document.getElementById("country"), document.getElementById("groupCountry")];
+        countryList.forEach(country => {
+            const option = document.createElement("option");
+            option.value = country;
+            option.textContent = country;
+            countryDropdowns.forEach(dropdown => dropdown.appendChild(option.cloneNode(true)));
+        });
+
+        // Handle group or individual selection
+        document.getElementById("groupRegistration").addEventListener("change", function () {
+            const individualForm = document.getElementById("individualForm");
+            const groupForm = document.getElementById("groupForm");
+            const individualFields = individualForm.querySelectorAll("[required]");
+            const groupFields = groupForm.querySelectorAll("[required]");
+
+            if (this.value === "individual") {
+                individualForm.style.display = "block";
+                groupForm.style.display = "none";
+                individualFields.forEach(field => field.setAttribute("required", ""));
+                groupFields.forEach(field => field.removeAttribute("required"));
+            } else if (this.value === "group") {
+                individualForm.style.display = "none";
+                groupForm.style.display = "block";
+                groupFields.forEach(field => field.setAttribute("required", ""));
+                individualFields.forEach(field => field.removeAttribute("required"));
+                generateGroupMemberFields();
+            } else {
+                individualForm.style.display = "none";
+                groupForm.style.display = "none";
+                individualFields.forEach(field => field.removeAttribute("required"));
+                groupFields.forEach(field => field.removeAttribute("required"));
+            }
+        });
+
+        // Update regions based on selected country
+        countryDropdowns.forEach(dropdown => {
+            dropdown.addEventListener("change", function () {
+                const regionDropdown = this.id === "country" ? document.getElementById("region") : document.getElementById("groupRegion");
+                regionDropdown.innerHTML = "<option value=''>Select region</option>";
+                let regions;
+
+                if (this.value === "Philippines") {
+                    regions = philippinesRegions;
+                } else {
+                    regions = Foreigner; // Add other countries and their regions if needed
+                }
+
+                regions.forEach(region => {
+                    const option = document.createElement("option");
+                    option.value = region;
+                    option.textContent = region;
+                    regionDropdown.appendChild(option);
+                });
+            });
+        });
+
+        // Generate group member fields
+        function generateGroupMemberFields() {
+            const groupSizeInput = document.getElementById("groupSize");
+            const groupMembersDiv = document.getElementById("groupMembers");
+
+            groupSizeInput.addEventListener("input", () => {
+                const numberOfMembers = parseInt(groupSizeInput.value, 10);
+                groupMembersDiv.innerHTML = "";
+
+                for (let i = 1; i <= numberOfMembers; i++) {
+                    const memberDiv = document.createElement("div");
+                    memberDiv.style.marginBottom = "15px";
+
+                    memberDiv.innerHTML = `
+                        <h4>Member ${i}:</h4>
+                        <label>Full Name:</label>
+                        <input type="text" name="memberName${i}" placeholder="Enter full name" required>
+
+                        <label>Date of Birth:</label>
+                        <input type="date" name="memberDOB${i}" required>
+
+                        <label>Sex:</label>
+                        <input type="text" name="memberSex${i}" required>
+
+                        <label>Upload Photo:</label>
+                        <input type="file" name="memberPhoto${i}" accept="image/*" required>
+
+                        <label>Contact Number:</label>
+                        <input type="text" name="memberContact${i}" placeholder="Enter contact number (or select Not Applicable)">
+
+                        <label>Email:</label>
+                        <input type="email" name="memberEmail${i}" placeholder="Enter email (or select Not Applicable)">
+                    `;
+
+                    groupMembersDiv.appendChild(memberDiv);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

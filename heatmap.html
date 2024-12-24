@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sagada Tourist Spots Map</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        header {
+            background-color: #1e90ff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        header p {
+            margin: 5px 0 0;
+            font-size: 1.2rem;
+        }
+
+        /* Map Container */
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        #map {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Sagada Tourist Spots Map</h1>
+        <p>Explore key tourist attractions in Sagada</p>
+    </header>
+
+    <!-- Map Container -->
+    <div class="container">
+        <div id="map"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script>
+        function initMap() {
+            // Initialize map centered on Sagada
+            const map = L.map('map').setView([17.0847, 120.9022], 10); // Coordinates of Sagada
+            
+            // Add a tile layer (OpenStreetMap)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 18
+            }).addTo(map);
+
+            // Tourist spots data
+            const touristSpots = [
+                { name: "Sumaguing Cave", coords: [17.0747, 120.8912] },
+                { name: "Echo Valley", coords: [17.0850, 120.8965] },
+                { name: "Kiltepan Viewpoint", coords: [17.0732, 120.8955] },
+                { name: "Sagada Hanging Coffins", coords: [17.0840, 120.8990] },
+                { name: "Bomod-Ok Falls", coords: [17.0778, 120.8999] }
+            ];
+
+            // Adding tourist spots to the map
+            touristSpots.forEach(spot => {
+                L.marker(spot.coords)
+                    .addTo(map)
+                    .bindPopup(spot.name);
+            });
+        }
+
+        // Load map after DOM loads
+        window.onload = initMap;
+    </script>
+
+</body>
+</html>
