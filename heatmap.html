@@ -3,90 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sagada Tourist Spots Map</title>
+    <title>Heat Map of Sagada Tourist Sites</title>
     <style>
-        /* General Styles */
         body {
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-        }
-
-        header {
-            background-color: #1e90ff;
-            color: white;
-            padding: 20px;
+            font-family: Arial, sans-serif;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            background-color: #f4f4f9;
+            background-image: url('sagada-background.jpeg');
         }
 
-        header h1 {
-            margin: 0;
-            font-size: 2rem;
+        #map-container {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            margin: 20px auto;
+            background: url('https://maps.googleapis.com/maps/api/staticmap?center=Sagada,Mountain+Province,Philippines&zoom=13&size=800x600&maptype=terrain') no-repeat center center;
+            background-size: cover;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        header p {
-            margin: 5px 0 0;
-            font-size: 1.2rem;
+        .zone {
+            position: absolute;
+            cursor: pointer;
+            background-color: rgba(0, 0, 255, 0.3);
+            border: 2px solid blue;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
         }
 
-        /* Map Container */
-        .container {
-            max-width: 800px;
-            margin: auto;
+        .northern {
+            width: 80px;
+            height: 80px;
+            top: 50px;
+            left: 300px;
+        }
+
+        .eastern {
+            width: 80px;
+            height: 80px;
+            top: 150px;
+            left: 500px;
+        }
+
+        .central {
+            width: 80px;
+            height: 80px;
+            top: 250px;
+            left: 350px;
+        }
+
+        .southcentral {
+            width: 80px;
+            height: 80px;
+            top: 400px;
+            left: 300px;
+        }
+
+        .southern {
+            width: 80px;
+            height: 80px;
+            top: 500px;
+            left: 400px;
+        }
+
+        .pin {
+            position: absolute;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .pin:hover {
+            transform: scale(1.2);
+        }
+
+        #popup {
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            width: 400px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
             padding: 20px;
+            display: none;
+            z-index: 10;
         }
 
-        #map {
-            width: 100%;
-            height: 500px;
+        #popup h3 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        #popup ul {
+            padding: 0;
+            list-style-type: none;
+        }
+
+        #popup ul li {
+            margin: 10px 0;
+        }
+
+        #close-popup {
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-
-    <!-- Header -->
-    <header>
-        <h1>Sagada Tourist Spots Map</h1>
-        <p>Explore key tourist attractions in Sagada</p>
-    </header>
-
-    <!-- Map Container -->
-    <div class="container">
-        <div id="map"></div>
+    <h1>Heat Map of Sagada Tourist Sites</h1>
+    <div id="map-container">
+        <div class="zone northern" onclick="showPins('northern')">Northern</div>
+        <div class="zone eastern" onclick="showPins('eastern')">Eastern</div>
+        <div class="zone central" onclick="showPins('central')">Central</div>
+        <div class="zone southcentral" onclick="showPins('southcentral')">South Central</div>
+        <div class="zone southern" onclick="showPins('southern')">Southern</div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <div id="popup">
+        <h3 id="popup-title"></h3>
+        <ul id="popup-content"></ul>
+        <div id="close-popup" onclick="closePopup()">Close</div>
+    </div>
+
     <script>
-        function initMap() {
-            // Initialize map centered on Sagada
-            const map = L.map('map').setView([17.0847, 120.9022], 10); // Coordinates of Sagada
+        const touristSites = {
+            northern: [
+                { name: "Bomod-ok Falls", x: 320, y: 80, link: "tourist-spots.html#bomod-ok" }
+            ],
+            eastern: [
+                { name: "Kiltepan View Point", link: "tourist-spots.html#kiltepan"},
+                { name: "Pog-o View Point", link: "tourist-spots.html#pog-os"}
+            ],
+            central: [
+                { name: "Sagada Weaving", x: 370, y: 270, link: "tourist-spots.html#weaving" },
+                { name: "Ganduyan Museum", x: 360, y: 290, link: "tourist-spots.html#ganduyan" },
+                { name: "Echo Valley", x: 310, y: 420, link: "tourist-spots.html#echo" },
+                { name: "Hanging Coffins", x: 320, y: 440, link: "tourist-spots.html#hanging" },
+                { name: "Saint Mary the Virgin Church", link: "tourist-spots.html#saint"},
+                { name: "Sagada Cemetery", link: "tourist-spots.html#cemetery"},
+                { name: "Underground River", link: "tourist-spots.html#underground"},
+                { name: "Bokong Falls", link: "tourist-spots.html#bokong"},
+                { name: "Sagada Pottery", x: 420, y: 520, link: "tourist-spots.html#pottery" }
+
+            ],
+            southcentral: [
+                { name: "Abandoned Bus"},
+                { name: "Lumiang Cave", link: "tourist-spots.html#lumiang"}
+            ],
+            southern: [
+            { name: "Sumaguing Cave", x: 520, y: 180, link: "tourist-spots.html#sumaguing" },
+            { name: "Pongas Falls", link: "tourists-spots.html#pongas"},
+            { name: "Blue Lagoon", link: "tourist-spots.html#lagoon"},
+            { name: "Mt. Ampacao", link: "tourist-spots.html#ampacao"},
+            { name: "Marlboro Hills", link: "tourist-spots.html#marlboro"}
             
-            // Add a tile layer (OpenStreetMap)
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 18
-            }).addTo(map);
+        ],
+        };
 
-            // Tourist spots data
-            const touristSpots = [
-                { name: "Sumaguing Cave", coords: [17.0747, 120.8912] },
-                { name: "Echo Valley", coords: [17.0850, 120.8965] },
-                { name: "Kiltepan Viewpoint", coords: [17.0732, 120.8955] },
-                { name: "Sagada Hanging Coffins", coords: [17.0840, 120.8990] },
-                { name: "Bomod-Ok Falls", coords: [17.0778, 120.8999] }
-            ];
+        function showPins(zone) {
+            // Remove existing pins
+            document.querySelectorAll('.pin').forEach(pin => pin.remove());
 
-            // Adding tourist spots to the map
-            touristSpots.forEach(spot => {
-                L.marker(spot.coords)
-                    .addTo(map)
-                    .bindPopup(spot.name);
+            // Add pins for the selected zone
+            touristSites[zone].forEach(site => {
+                const pin = document.createElement('div');
+                pin.className = 'pin';
+                pin.style.left = `${site.x}px`;
+                pin.style.top = `${site.y}px`;
+                pin.title = site.name;
+                pin.onclick = () => window.location.href = site.link;
+                document.getElementById('map-container').appendChild(pin);
             });
         }
 
-        // Load map after DOM loads
-        window.onload = initMap;
+        function closePopup() {
+            const popup = document.getElementById('popup');
+            popup.style.display = 'none';
+        }
     </script>
-
 </body>
 </html>

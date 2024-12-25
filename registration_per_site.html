@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tourist Site Registration</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Registration Form</h1>
+        <p>Please select the individuals who will be attending:</p>
+        <form id="registrationForm">
+            <div class="name-list">
+                <!-- These names would ideally be dynamically populated -->
+                <label><input type="checkbox" name="attendees" value="John Doe"> John Doe</label><br>
+                <label><input type="checkbox" name="attendees" value="Jane Smith"> Jane Smith</label><br>
+                <label><input type="checkbox" name="attendees" value="Alice Brown"> Alice Brown</label><br>
+                <label><input type="checkbox" name="attendees" value="Bob Johnson"> Bob Johnson</label><br>
+            </div>
+            <button type="button" onclick="submitForm()">Submit Registration</button>
+        </form>
+    </div>
+
+    <script>
+        function submitForm() {
+            const form = document.getElementById('registrationForm');
+            const selectedNames = [];
+
+            form.querySelectorAll('input[name="attendees"]:checked').forEach(checkbox => {
+                selectedNames.push(checkbox.value);
+            });
+
+            if (selectedNames.length > 0) {
+                alert('Registration successful for: ' + selectedNames.join(', '));
+            } else {
+                alert('Please select at least one attendee.');
+            }
+        }
+    </script>
+</body>
+</html>
