@@ -78,7 +78,6 @@
                 <label>Country of Origin:</label>
                 <select id="country" required>
                     <option value="">Select Country</option>
-                    <!-- Additional countries listed alphabetically -->
                 </select>
 
                 <label>Region:</label>
@@ -105,17 +104,9 @@
 
                 <div id="groupMembers"></div>
 
-                <label>Sex:</label>
-                <select id="sex" required>
-                    <option value="">Select sex</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                </select>
-
                 <label>Country of Origin:</label>
                 <select id="groupCountry" required>
                     <option value="">Select Country</option>
-                    <!-- Additional countries listed alphabetically -->
                 </select>
 
                 <label>Region:</label>
@@ -139,12 +130,12 @@
 
     <script>
         const countryList = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", 
-        "Bahamas, The", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin(Dahomey)", "Bolovia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkunia Faso", "Burma", "Burundi", 
-        "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Cayman Islands, The", "Central African Rebuplican", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic of the", "Congo, Republic of the", "Cook Islands", "Costa Rica", "Cote d'Ivoire (Ivory Coast)", "Crotia", "Cuba", "Cyprus", "Czech Republic",
+        "Bahamas, The", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burma", "Burundi", 
+        "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic of the", "Congo, Republic of the", "Costa Rica", "Cote d'Ivoire (Ivory Coast)", "Croatia", "Cuba", "Cyprus", "Czech Republic",
         "Denmark", "Djibouti", "Dominica", "Dominican Republic",
-        "East Timor (Timor-Leste)", "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France",
+        "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France",
         "Gabon", "Gambia, The", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana",
-        "Haiti", "Holy See", "Honduras", "Hungary", 
+        "Haiti", "Honduras", "Hungary", 
         "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy",
         "Jamaica", "Japan", "Jordan",
         "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kosovo", "Kuwait", "Kyrgyzstan",
@@ -155,12 +146,13 @@
         "Pakistan", "Palau", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal",
         "Qatar",
         "Romania", "Russia", "Rwanda",
-        "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Mariano", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzereland", "Syria",
-        "Tajikistan", "Tanzania", "Thailand", "Togo", "Tonga", "Trinidad and Tobago", "Tunasia", "Turkey", "Turkmenistan", "Tuvalu",
+        "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", "Syria",
+        "Tajikistan", "Tanzania", "Thailand", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu",
         "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", "United States of America", "Uruguay", "Uzbekistan",
-        "Vanuata", "Venezuela", "Vietnam",
+        "Vanuatu", "Venezuela", "Vietnam",
         "Yemen",
         "Zambia", "Zimbabwe"];
+
         const philippinesRegions = ["Region I", "Region II", "Region III", "Region IV", "Region V", "Region VI", "Region VII", "Region VIII", "Region IX", "Region X", "Region XI", "Region XII", "Region XIII", "NCR", "CAR", "BARMM", "MIMAROPA"];
 
         // Populate country dropdowns
@@ -208,7 +200,7 @@
                 if (this.value === "Philippines") {
                     regions = philippinesRegions;
                 } else {
-                    regions = Foreigner; // Add other countries and their regions if needed
+                    regions = ["Region not applicable"];
                 }
 
                 regions.forEach(region => {
@@ -258,6 +250,16 @@
                 }
             });
         }
+
+        // Registration number generation
+        document.getElementById("registrationForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const isGroup = document.getElementById("groupRegistration").value === "group";
+            const registrationNumber = `REG-${Date.now()}${isGroup ? "-G" : "-I"}`;
+
+            alert(`Registration successful! Your registration number is: ${registrationNumber}`);
+        });
     </script>
 </body>
 </html>

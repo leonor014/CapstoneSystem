@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tourist Review Feature</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #8ed48e;
+            margin: 0;
+            padding: 20px;
+        }
+        .review-container {
+            max-width: 400px;
+            margin: auto;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .review-container h2 {
+            text-align: center;
+            font-size: 24px;
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .rating {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .rating label {
+            font-size: 30px;
+            color: #ccc;
+            cursor: pointer;
+        }
+        .rating input {
+            display: none;
+        }
+        .rating input:checked ~ label,
+        .rating label:hover,
+        .rating label:hover ~ label {
+            color: gold;
+        }
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+        .review-list {
+            margin-top: 20px;
+        }
+        .review {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .review p {
+            margin: 5px 0;
+        }
+        .edit-btn, .save-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .edit-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .edit-btn:hover {
+            background-color: #218838;
+        }
+        .save-btn {
+            background-color: #ffc107;
+            color: black;
+        }
+        .save-btn:hover {
+            background-color: #e0a800;
+        }
+    </style>
+</head>
+<body>
+    <div class="review-container">
+        <h2>Destination Review</h2>
+        <form id="reviewForm">
+            <textarea id="comment" name="comment" placeholder="Write your review here" required></textarea>
+            <div class="rating">
+                <label for="star1">&#9733;</label>
+                <input type="radio" id="star1" name="rating" value="1">
+                <label for="star2">&#9733;</label>
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star3">&#9733;</label>
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star4">&#9733;</label>
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star5">&#9733;</label>
+                <input type="radio" id="star5" name="rating" value="5">
+            </div>
+            <div class="image">
+                <input type="file" id="image" name="image" accept="image/*">
+            </div>
+            <button type="submit" class="submit-btn">Submit Review</button>
+        </form>
+        <div class="review-list" id="reviewList">
+            <h3>Reviews</h3>
+        </div>
+    </div>
+
+    <script>
+        const reviewForm = document.getElementById('reviewForm');
+        const reviewList = document.getElementById('reviewList');
+
+        reviewForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const comment = document.getElementById('comment').value;
+            const rating = document.querySelector('input[name="rating"]:checked')?.value;
+            const imageInput = document.getElementById('image');
+            const date = new Date().toLocaleString();
+
+            const reviewDiv = document.createElement('div');
+            reviewDiv.classList.add('review');
+
+            const commentPara = document.createElement('p');
+            commentPara.textContent = `Comment: ${comment}`;
+            commentPara.setAttribute('contenteditable', 'true');
+
+            const ratingPara = document.createElement('p');
+            ratingPara.textContent = `Rating: ${rating || 'No rating'}`;
+
+            const datePara = document.createElement('p');
+            datePara.textContent = `Date: ${date}`;
+
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Edit';
+            editButton.classList.add('edit-btn');
+            editButton.addEventListener('click', () => {
+                commentPara.contentEditable = "true";
+                commentPara.focus();
+            });
+
+            const saveButton = document.createElement('button');
+            saveButton.textContent = 'Save';
+            saveButton.classList.add('save-btn');
+            saveButton.addEventListener('click', () => {
+                commentPara.contentEditable = "false";
+            });
+
+            reviewDiv.appendChild(commentPara);
+            reviewDiv.appendChild(ratingPara);
+            reviewDiv.appendChild(datePara);
+            reviewDiv.appendChild(editButton);
+            reviewDiv.appendChild(saveButton);
+
+            if (imageInput.files.length > 0) {
+                const image = document.createElement('img');
+                image.src = URL.createObjectURL(imageInput.files[0]);
+                image.alt = 'Attached Image';
+                image.style.maxWidth = '100%';
+                image.style.marginTop = '10px';
+                reviewDiv.appendChild(image);
+            }
+
+            reviewList.appendChild(reviewDiv);
+
+            reviewForm.reset();
+        });
+    </script>
+</body>
+</html>

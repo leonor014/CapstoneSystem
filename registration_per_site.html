@@ -1,42 +1,185 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tourist Site Registration</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            display: block;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .member {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Registration Form</h1>
-        <p>Please select the individuals who will be attending:</p>
-        <form id="registrationForm">
-            <div class="name-list">
-                <!-- These names would ideally be dynamically populated -->
-                <label><input type="checkbox" name="attendees" value="John Doe"> John Doe</label><br>
-                <label><input type="checkbox" name="attendees" value="Jane Smith"> Jane Smith</label><br>
-                <label><input type="checkbox" name="attendees" value="Alice Brown"> Alice Brown</label><br>
-                <label><input type="checkbox" name="attendees" value="Bob Johnson"> Bob Johnson</label><br>
+        <h1>Tourist Site Registration</h1>
+        
+        <form id="siteRegistrationForm">
+            <label for="registrationNumber">Enter Registration Number:</label>
+            <input type="text" id="registrationNumber" placeholder="Enter registration number" required>
+            
+            <button type="button" id="fetchDetails">Fetch Details</button>
+
+            <div id="detailsSection" style="display:none; margin-top:20px;">
+                <h3>Tourist Details</h3>
+                <div id="touristDetails"></div>
+
+                <label>Mark Attendance:</label>
+                <div id="attendanceSection"></div>
+
+                <button type="submit">Submit Attendance</button>
             </div>
-            <button type="button" onclick="submitForm()">Submit Registration</button>
         </form>
     </div>
 
     <script>
-        function submitForm() {
-            const form = document.getElementById('registrationForm');
-            const selectedNames = [];
-
-            form.querySelectorAll('input[name="attendees"]:checked').forEach(checkbox => {
-                selectedNames.push(checkbox.value);
-            });
-
-            if (selectedNames.length > 0) {
-                alert('Registration successful for: ' + selectedNames.join(', '));
-            } else {
-                alert('Please select at least one attendee.');
+        // Simulate database for fetched details
+        const mockDatabase = {
+            "REG-12345-I": {
+                type: "Individual",
+                details: {
+                    name: "John Doe",
+                    dob: "1990-01-01",
+                    sex: "Male",
+                    country: "Philippines",
+                    region: "NCR",
+                    contact: "09171234567",
+                    email: "johndoe@example.com",
+                },
+                members: []
+            },
+            "REG-67890-G": {
+                type: "Group",
+                details: {
+                    groupName: "Adventure Seekers",
+                    country: "Philippines",
+                    region: "CAR",
+                    contact: "09178889999",
+                    email: "group@example.com",
+                },
+                members: [
+                    { name: "Alice", dob: "1995-06-12", sex: "Female" },
+                    { name: "Bob", dob: "1992-03-08", sex: "Male" },
+                ]
             }
-        }
+        };
+
+        // Handle fetch details
+        document.getElementById("fetchDetails").addEventListener("click", () => {
+            const regNumber = document.getElementById("registrationNumber").value;
+            const tourist = mockDatabase[regNumber];
+
+            if (tourist) {
+                const detailsSection = document.getElementById("detailsSection");
+                const touristDetails = document.getElementById("touristDetails");
+                const attendanceSection = document.getElementById("attendanceSection");
+
+                touristDetails.innerHTML = "";
+                attendanceSection.innerHTML = "";
+
+                if (tourist.type === "Individual") {
+                    const details = tourist.details;
+                    touristDetails.innerHTML = `
+                        <p><strong>Name:</strong> ${details.name}</p>
+                        <p><strong>Date of Birth:</strong> ${details.dob}</p>
+                        <p><strong>Sex:</strong> ${details.sex}</p>
+                        <p><strong>Country:</strong> ${details.country}</p>
+                        <p><strong>Region:</strong> ${details.region}</p>
+                        <p><strong>Contact:</strong> ${details.contact}</p>
+                        <p><strong>Email:</strong> ${details.email}</p>
+                    `;
+
+                    attendanceSection.innerHTML = `
+                        <div class="member">
+                            <label>
+                                <input type="checkbox" name="attendance" value="${details.name}" checked> ${details.name}
+                            </label>
+                        </div>
+                    `;
+                } else if (tourist.type === "Group") {
+                    const groupDetails = tourist.details;
+                    touristDetails.innerHTML = `
+                        <p><strong>Group Name:</strong> ${groupDetails.groupName}</p>
+                        <p><strong>Country:</strong> ${groupDetails.country}</p>
+                        <p><strong>Region:</strong> ${groupDetails.region}</p>
+                        <p><strong>Contact:</strong> ${groupDetails.contact}</p>
+                        <p><strong>Email:</strong> ${groupDetails.email}</p>
+                    `;
+
+                    tourist.members.forEach(member => {
+                        attendanceSection.innerHTML += `
+                            <div class="member">
+                                <p><strong>Name:</strong> ${member.name}</p>
+                                <p><strong>Date of Birth:</strong> ${member.dob}</p>
+                                <p><strong>Sex:</strong> ${member.sex}</p>
+                                <label>
+                                    <input type="checkbox" name="attendance" value="${member.name}" checked> Mark Present
+                                </label>
+                            </div>
+                        `;
+                    });
+                }
+
+                detailsSection.style.display = "block";
+            } else {
+                alert("Registration number not found.");
+            }
+        });
+
+        // Handle attendance submission
+        document.getElementById("siteRegistrationForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+            const attendance = Array.from(document.querySelectorAll("input[name='attendance']:checked"))
+                .map(input => input.value);
+
+            alert(`Attendance submitted for: ${attendance.join(", ")}`);
+        });
     </script>
 </body>
 </html>
