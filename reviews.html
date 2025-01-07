@@ -34,6 +34,9 @@
             font-size: 14px;
             margin-bottom: 15px;
         }
+        input[type="file"] {
+            margin-bottom: 15px;
+        }
         .rating {
             margin-bottom: 15px;
             text-align: center;
@@ -79,7 +82,13 @@
         .review p {
             margin: 5px 0;
         }
-        .edit-btn, .save-btn {
+        .review img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .edit-btn, .save-btn, .delete-btn {
             padding: 5px 10px;
             border: none;
             border-radius: 3px;
@@ -100,6 +109,13 @@
         .save-btn:hover {
             background-color: #e0a800;
         }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -107,20 +123,18 @@
         <h2>Destination Review</h2>
         <form id="reviewForm">
             <textarea id="comment" name="comment" placeholder="Write your review here" required></textarea>
+            <input type="file" id="image" accept="image/*">
             <div class="rating">
-                <label for="star1">&#9733;</label>
-                <input type="radio" id="star1" name="rating" value="1">
-                <label for="star2">&#9733;</label>
-                <input type="radio" id="star2" name="rating" value="2">
-                <label for="star3">&#9733;</label>
-                <input type="radio" id="star3" name="rating" value="3">
-                <label for="star4">&#9733;</label>
-                <input type="radio" id="star4" name="rating" value="4">
                 <label for="star5">&#9733;</label>
                 <input type="radio" id="star5" name="rating" value="5">
-            </div>
-            <div class="image">
-                <input type="file" id="image" name="image" accept="image/*">
+                <label for="star4">&#9733;</label>
+                <input type="radio" id="star4" name="rating" value="4">
+                <label for="star3">&#9733;</label>
+                <input type="radio" id="star3" name="rating" value="3">
+                <label for="star2">&#9733;</label>
+                <input type="radio" id="star2" name="rating" value="2">
+                <label for="star1">&#9733;</label>
+                <input type="radio" id="star1" name="rating" value="1">
             </div>
             <button type="submit" class="submit-btn">Submit Review</button>
         </form>
@@ -138,8 +152,9 @@
 
             const comment = document.getElementById('comment').value;
             const rating = document.querySelector('input[name="rating"]:checked')?.value;
-            const imageInput = document.getElementById('image');
             const date = new Date().toLocaleString();
+            const imageInput = document.getElementById('image');
+            const imageFile = imageInput.files[0];
 
             const reviewDiv = document.createElement('div');
             reviewDiv.classList.add('review');
@@ -153,6 +168,13 @@
 
             const datePara = document.createElement('p');
             datePara.textContent = `Date: ${date}`;
+
+            if (imageFile) {
+                const imageElement = document.createElement('img');
+                imageElement.src = URL.createObjectURL(imageFile);
+                imageElement.alt = "Attached Image";
+                reviewDiv.appendChild(imageElement);
+            }
 
             const editButton = document.createElement('button');
             editButton.textContent = 'Edit';
@@ -169,20 +191,19 @@
                 commentPara.contentEditable = "false";
             });
 
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.classList.add('delete-btn');
+            deleteButton.addEventListener('click', () => {
+                reviewList.removeChild(reviewDiv);
+            });
+
             reviewDiv.appendChild(commentPara);
             reviewDiv.appendChild(ratingPara);
             reviewDiv.appendChild(datePara);
             reviewDiv.appendChild(editButton);
             reviewDiv.appendChild(saveButton);
-
-            if (imageInput.files.length > 0) {
-                const image = document.createElement('img');
-                image.src = URL.createObjectURL(imageInput.files[0]);
-                image.alt = 'Attached Image';
-                image.style.maxWidth = '100%';
-                image.style.marginTop = '10px';
-                reviewDiv.appendChild(image);
-            }
+            reviewDiv.appendChild(deleteButton);
 
             reviewList.appendChild(reviewDiv);
 
