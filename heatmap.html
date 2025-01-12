@@ -3,133 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Heat Map - Sagada</title>
+    <title>Sagada Heat Map</title>
     <style>
-        #map {
-            height: 100vh;
-            width: 100%;
-        }
-        .info-box {
-            background-color: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-        .info-box h3 {
+        /* General Styles */
+        body {
             margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: #1e90ff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        header p {
+            margin: 5px 0 0;
             font-size: 1.2rem;
-            color: #333;
         }
-        .info-box ul {
-            list-style: none;
-            padding: 0;
+
+        /* Map Container */
+        #map-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin: 20px auto;
+            text-align: center;
         }
-        .info-box ul li {
-            margin: 5px 0;
+
+        #heatmap {
+            width: 100%;
+            height: 700px;
+            background: url('sagada-map.jpg') no-repeat center center;
+            background-size: cover;
+            border: 2px solid #ccc;
+            position: relative;
         }
-        .info-box ul li a {
-            color: #1e90ff;
+
+        /* Zonal Areas */
+        .zone {
+            position: absolute;
+            cursor: pointer;
+            background-color: rgba(0, 0, 255, 0.2);
+            border: 2px solid blue;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .zone:hover {
+            background-color: rgba(0, 0, 255, 0.5);
+        }
+
+        /* Zone Labels */
+        .zone-label {
+            position: absolute;
+            font-size: 1rem;
+            font-weight: bold;
+            color: black;
+            white-space: nowrap;
+        }
+
+        /* Individual Tourist Spot Pins */
+        .pin {
+            position: absolute;
+            cursor: pointer;
+            background-color: red;
+            color: white;
+            font-size: 0.8rem;
+            text-align: center;
+            line-height: 1.2;
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            transform: translate(-50%, -50%);
+            transition: transform 0.3s ease;
+        }
+
+        .pin:hover {
+            transform: scale(1.2);
+            z-index: 10;
+        }
+
+        /* Labels for Tourist Spots */
+        .pin span {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: black;
+            white-space: nowrap;
+        }
+
+        /* Back Button */
+        .back-button {
+            display: inline-block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background: #1e90ff;
+            border: none;
+            border-radius: 5px;
             text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
         }
-        .info-box ul li a:hover {
-            text-decoration: underline;
+
+        .back-button:hover {
+            background: #104e8b;
         }
     </style>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
 </head>
 <body>
-    <div id="map"></div>
 
-    <script>
-        function initMap() {
-            // Center of Sagada
-            const center = { lat: 17.0855, lng: 120.9020 };
+<header>
+    <h1>Sagada Heat Map</h1>
+    <p>Click on a pin to learn more about the tourist spot</p>
+</header>
 
-            // Initialize the map
-            const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 13,
-                center: center,
-            });
+<!-- Map Container -->
+<div id="map-container">
+    <div id="heatmap">
+        <!-- Zones -->
+        <div class="zone" style="width: 150px; height: 150px; top: 10%; left: 20%;"></div> <!-- Northern Zone -->
+        <div class="zone-label" style="top: 8%; left: 18%;">Northern Zone</div>
 
-            // Define coordinates for different zones
-            const zones = {
-                "Northern Zone": [
-                    { lat: 17.1, lng: 120.89 },
-                    { lat: 17.12, lng: 120.92 },
-                    { lat: 17.08, lng: 120.94 },
-                    { lat: 17.06, lng: 120.90 },
-                ],
-                "Central Zone": [
-                    { lat: 17.085, lng: 120.895 },
-                    { lat: 17.09, lng: 120.91 },
-                    { lat: 17.08, lng: 120.92 },
-                    { lat: 17.07, lng: 120.91 },
-                ],
-                "Southern Zone": [
-                    { lat: 17.07, lng: 120.88 },
-                    { lat: 17.08, lng: 120.89 },
-                    { lat: 17.06, lng: 120.90 },
-                    { lat: 17.05, lng: 120.89 },
-                ],
-            };
+        <div class="zone" style="width: 150px; height: 150px; top: 25%; left: 75%;"></div> <!-- Eastern Zone -->
+        <div class="zone-label" style="top: 23%; left: 80%;">Eastern Zone</div>
 
-            // Define tourist spots per zone
-            const touristSpots = {
-                "Northern Zone": [
-                    { name: "Bomod-ok Falls", link: "#bomod-ok-falls" },
-                    { name: "Marlboro Hills", link: "#marlboro-hills" },
-                ],
-                "Central Zone": [
-                    { name: "Sumaguing Cave", link: "#sumaguing-cave" },
-                    { name: "Echo Valley and Hanging Coffins", link: "#hanging-coffins" },
-                ],
-                "Southern Zone": [
-                    { name: "Kiltepan Viewpoint", link: "#kiltepan-viewpoint" },
-                    { name: "Pongas Falls", link: "#pongas-falls" },
-                ],
-            };
+        <div class="zone" style="width: 180px; height: 180px; top: 50%; left: 40%;"></div> <!-- Central Zone -->
+        <div class="zone-label" style="top: 48%; left: 35%;">Central Zone</div>
 
-            // Create polygons for zones
-            for (const [zoneName, coordinates] of Object.entries(zones)) {
-                const polygon = new google.maps.Polygon({
-                    paths: coordinates,
-                    strokeColor: "#FF0000",
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: "#FF0000",
-                    fillOpacity: 0.35,
-                });
+        <div class="zone" style="width: 150px; height: 150px; top: 65%; left: 60%;"></div> <!-- South Central Zone -->
+        <div class="zone-label" style="top: 63%; left: 65%;">South Central Zone</div>
 
-                polygon.setMap(map);
+        <div class="zone" style="width: 150px; height: 150px; top: 80%; left: 30%;"></div> <!-- Southern Zone -->
+        <div class="zone-label" style="top: 78%; left: 25%;">Southern Zone</div>
 
-                // Add a click event for each zone
-                polygon.addListener("click", () => {
-                    const content = `
-                        <div class="info-box">
-                            <h3>${zoneName}</h3>
-                            <ul>
-                                ${touristSpots[zoneName]
-                                    .map(
-                                        (spot) =>
-                                            `<li><a href="${spot.link}" target="_blank">${spot.name}</a></li>`
-                                    )
-                                    .join("")}
-                            </ul>
-                        </div>
-                    `;
+        <!-- Tourist Spot Pins -->
+        <!-- Northern -->
+        <div class="pin" style="top: 12%; left: 22%;" onclick="goToSpot('bomod-ok')">
+            <span>Bomod-ok Falls</span>
+        </div>
+        <div class="pin" style="top: 15%; left: 25%;" onclick="goToSpot('langsayan')">
+            <span>Langsayan</span>
+        </div>
 
-                    const infoWindow = new google.maps.InfoWindow({
-                        content: content,
-                        position: coordinates[0], // Position the info window at the first point of the polygon
-                    });
+        <!-- Eastern -->
+        <div class="pin" style="top: 27%; left: 77%;" onclick="goToSpot('marlboro')">
+            <span>Marlboro Hills</span>
+        </div>
+        <div class="pin" style="top: 30%; left: 79%;" onclick="goToSpot('pog-o')">
+            <span>Pog-o Viewpoint</span>
+        </div>
 
-                    infoWindow.open(map);
-                });
-            }
-        }
+        <!-- Central -->
+        <div class="pin" style="top: 52%; left: 42%;" onclick="goToSpot('church')">
+            <span>Saint Mary Church</span>
+        </div>
+        <div class="pin" style="top: 54%; left: 43%;" onclick="goToSpot('cemetery')">
+            <span>Sagada Cemetery</span>
+        </div>
+        <div class="pin" style="top: 56%; left: 45%;" onclick="goToSpot('echo')">
+            <span>Echo Valley</span>
+        </div>
+        <div class="pin" style="top: 58%; left: 41%;" onclick="goToSpot('weaving')">
+            <span>Sagada Weaving</span>
+        </div>
 
-        // Initialize the map
-        window.onload = initMap;
-    </script>
+        <!-- South Central -->
+        <div class="pin" style="top: 67%; left: 62%;" onclick="goToSpot('lumiang')">
+            <span>Lumiang Cave</span>
+        </div>
+        <div class="pin" style="top: 69%; left: 63%;" onclick="goToSpot('ampacao')">
+            <span>Ampacao</span>
+        </div>
+
+        <!-- Southern -->
+        <div class="pin" style="top: 82%; left: 32%;" onclick="goToSpot('sumaguing')">
+            <span>Sumaguing Cave</span>
+        </div>
+        <div class="pin" style="top: 84%; left: 34%;" onclick="goToSpot('balangagan')">
+            <span>Balangagan Cave</span>
+        </div>
+    </div>
+</div>
+
+<!-- Back Button -->
+<div style="text-align: center;">
+    <a href="index.html" class="back-button">Back to Home</a>
+</div>
+
+<script>
+    function goToSpot(spotId) {
+        window.location.href = `tourist-spots.html#${spotId}`;
+    }
+</script>
+
 </body>
 </html>
