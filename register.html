@@ -119,9 +119,6 @@
 
                 <label>Email:</label>
                 <input type="email" id="groupEmail" placeholder="Enter email (or select Not Applicable)" required>
-
-                <label>Upload Group Photo:</label>
-                <input type="file" id="uploadGroupPhoto" accept="image/*" required>
             </div>
 
             <button type="submit">Register</button>
@@ -234,16 +231,14 @@
                         <input type="date" name="memberDOB${i}" required>
 
                         <label>Sex:</label>
-                        <input type="text" name="memberSex${i}" required>
+                        <select name="memberSex${i}" required>
+                            <option value="">Select sex</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
 
                         <label>Upload Photo:</label>
                         <input type="file" name="memberPhoto${i}" accept="image/*" required>
-
-                        <label>Contact Number:</label>
-                        <input type="text" name="memberContact${i}" placeholder="Enter contact number (or select Not Applicable)">
-
-                        <label>Email:</label>
-                        <input type="email" name="memberEmail${i}" placeholder="Enter email (or select Not Applicable)">
                     `;
 
                     groupMembersDiv.appendChild(memberDiv);

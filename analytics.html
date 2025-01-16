@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -39,35 +39,31 @@
             padding: 20px;
         }
 
-        .chart-title, .site-title {
-            cursor: pointer;
-            padding: 15px;
-            background: #1e90ff;
-            color: white;
-            margin: 10px 0;
-            text-align: center;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
-        }
-
-        .chart-title:hover, .site-title:hover {
-            background: #104e8b;
-        }
-
-        .chart-content, .site-content {
-            display: none; /* Initially hide the content */
+        .chart-container {
             margin: 20px 0;
             padding: 20px;
             background: rgb(235, 232, 232);
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .chart-container h2 {
+            margin: 0;
+            color: #1e90ff;
+        }
+
+        .chart-container canvas {
+            display: none;
+            margin-top: 10px;
         }
 
         .spot {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
+            cursor: pointer;
         }
 
         .spot img {
@@ -85,15 +81,29 @@
             margin: 0 0 10px;
         }
 
-        .spot-info p {
-            margin: 0;
-            line-height: 1.6;
+        .spot-info canvas {
+            display: none;
+            margin-top: 10px;
         }
 
-        canvas {
-            width: 100%;
-            max-width: 600px;
-            height: auto;
+        /* Back Button */
+        .back-button {
+            display: inline-block;
+            margin: 20px;
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background: #1e90ff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background: #104e8b;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -109,64 +119,52 @@
     <!-- Analytics Section -->
     <div class="analytics-container">
         <!-- Monthly Visitor Statistics -->
-        <div class="chart-title" onclick="toggleContent('visitorContent')">Monthly Visitor Statistics</div>
-        <div id="visitorContent" class="chart-content">
+        <div class="chart-container" onclick="toggleChart('visitorChart')">
+            <h2>Monthly Visitor Statistics</h2>
             <canvas id="visitorChart"></canvas>
         </div>
 
         <!-- Age Demographics -->
-        <div class="chart-title" onclick="toggleContent('ageContent')">Age Demographics</div>
-        <div id="ageContent" class="chart-content">
+        <div class="chart-container" onclick="toggleChart('ageChart')">
+            <h2>Age Demographics</h2>
             <canvas id="ageChart"></canvas>
         </div>
 
         <!-- Top 10 Nationalities -->
-        <div class="chart-title" onclick="toggleContent('originContent')">Top 10 Nationalities</div>
-        <div id="originContent" class="chart-content">
+        <div class="chart-container" onclick="toggleChart('originChart')">
+            <h2>Top 10 Nationalities</h2>
             <canvas id="originChart"></canvas>
         </div>
 
         <!-- Gender Demographics -->
-        <div class="chart-title" onclick="toggleContent('genderContent')">Gender Demographics</div>
-        <div id="genderContent" class="chart-content">
+        <div class="chart-container" onclick="toggleChart('genderChart')">
+            <h2>Gender Demographics</h2>
             <canvas id="genderChart"></canvas>
         </div>
 
-        <!-- Site-Specific Analytics -->
-        <div class="site-title" onclick="toggleContent('sumaguingContent')">Sumaguing Cave Analytics</div>
-        <div id="sumaguingContent" class="site-content">
-            <div class="spot">
-                <img src="sumaguing-cave.jpg" alt="Sumaguing Cave">
-                <div class="spot-info">
-                    <h3>Sumaguing Cave</h3>
-                    <p>The most visited tourist spot known for its limestone formations and caving adventures.</p>
-                </div>
+        <!-- Spot Visualizations Section -->
+        <div class="spot" onclick="toggleChart('sumaguingChart')">
+            <img src="sumaguing-cave.jpg" alt="Sumaguing Cave">
+            <div class="spot-info">
+                <h3>Sumaguing Cave</h3>
+                <canvas id="sumaguingChart"></canvas>
             </div>
-            <canvas id="sumaguingChart"></canvas>
         </div>
 
-        <div class="site-title" onclick="toggleContent('blueSoilContent')">Blue Soil Hills Analytics</div>
-        <div id="blueSoilContent" class="site-content">
-            <div class="spot">
-                <img src="blue-soil.jpg" alt="Blue Soil Hills">
-                <div class="spot-info">
-                    <h3>Blue Soil Hills</h3>
-                    <p>Popular among seniors for its serene atmosphere and stunning blue-colored hills.</p>
-                </div>
+        <div class="spot" onclick="toggleChart('blueSoilChart')">
+            <img src="blue-soil.jpg" alt="Blue Soil Hills">
+            <div class="spot-info">
+                <h3>Blue Soil Hills</h3>
+                <canvas id="blueSoilChart"></canvas>
             </div>
-            <canvas id="blueSoilChart"></canvas>
         </div>
 
-        <div class="site-title" onclick="toggleContent('hangingCoffinsContent')">Hanging Coffins Analytics</div>
-        <div id="hangingCoffinsContent" class="site-content">
-            <div class="spot">
-                <img src="hanging-coffins.jpg" alt="Hanging Coffins">
-                <div class="spot-info">
-                    <h3>Hanging Coffins</h3>
-                    <p>Historical and cultural destination loved by families and children.</p>
-                </div>
+        <div class="spot" onclick="toggleChart('hangingCoffinsChart')">
+            <img src="hanging-coffins.jpg" alt="Hanging Coffins">
+            <div class="spot-info">
+                <h3>Hanging Coffins</h3>
+                <canvas id="hangingCoffinsChart"></canvas>
             </div>
-            <canvas id="hangingCoffinsChart"></canvas>
         </div>
     </div>
 
@@ -176,68 +174,33 @@
     </div>
 
     <script>
-        // Function to toggle content visibility
-        function toggleContent(id) {
-            const content = document.getElementById(id);
-            if (content.style.display === "none" || content.style.display === "") {
-                content.style.display = "block";
-            } else {
-                content.style.display = "none";
-            }
+        function toggleChart(chartId) {
+            const canvas = document.getElementById(chartId);
+            const isVisible = canvas.style.display === 'block';
+            canvas.style.display = isVisible ? 'none' : 'block';
         }
 
-        // Charts for general analytics
+        // Chart Initialization (same as before)
         const visitorCtx = document.getElementById('visitorChart').getContext('2d');
-        new Chart(visitorCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [{
-                    label: 'Visitors',
-                    data: [500, 600, 800, 1000, 1500, 2000, 1800, 1700, 1400, 1200, 1000, 900],
-                    borderColor: '#1e90ff',
-                    backgroundColor: 'rgba(30, 144, 255, 0.2)',
-                }]
-            }
-        });
+        new Chart(visitorCtx, { type: 'line', data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], datasets: [{ label: 'Visitors', data: [500, 600, 800, 1000, 1500, 2000, 1800, 1700, 1400, 1200, 1000, 900], borderColor: '#1e90ff', fill: true, backgroundColor: 'rgba(30, 144, 255, 0.2)', tension: 0.3 }] } });
 
-        // Additional site-specific charts
+        const ageCtx = document.getElementById('ageChart').getContext('2d');
+        new Chart(ageCtx, {type: 'pie', data: {labels: ['Infant (0-2)', 'Children (3-17)', 'Young Adults (18-39)', 'Middle-Age Adults (40-59)', 'Seniors (60+)'], datasets: [{data: [15, 70, 15, 20, 25], backgroundColor: ['#1e90ff', '#87cefa', '#104e8b', '#4682b4', '#00bfff'] }] } });
+
+        const originCtx = document.getElementById('originChart').getContext('2d');
+        new Chart(originCtx, { type: 'bar', data: { labels: ['USA', 'Japan', 'China', 'Australia', 'UK', 'Germany', 'Canada', 'South Korea', 'India', 'France'], datasets: [{ data: [1200, 1100, 1050, 1000, 950, 900, 850, 800, 750, 700], backgroundColor: ['#1e90ff', '#87cefa', '#4682b4', '#00bfff', '#104e8b', '#1e90ff', '#87cefa', '#4682b4', '#00bfff', '#104e8b'] }] } });
+
+        const genderCtx = document.getElementById('genderChart').getContext('2d');
+        new Chart(genderCtx, { type: 'doughnut', data: { labels: ['Male', 'Female'], datasets: [{ data: [80, 90], backgroundColor: ['#1e90ff', '#87cefa'] }] } });
+
         const sumaguingCtx = document.getElementById('sumaguingChart').getContext('2d');
-        new Chart(sumaguingCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Children (3-17)', 'Adults (18-59)', 'Seniors (60+)'],
-                datasets: [{
-                    label: 'Visitors by Age',
-                    data: [10, 80, 10],
-                    backgroundColor: '#1e90ff'
-                }]
-            }
-        });
+        new Chart(sumaguingCtx, { type: 'bar', data: { labels: ['Infant (0-2)', 'Children (3-17)', 'Young Adults (18-39)', 'Middle-Age Adults (40-59)', 'Seniors (60+)'], datasets: [{ data: [0, 20, 150, 50, 5], backgroundColor: ['#1e90ff', '#87cefa', '#104e8b', '#4682b4', '#00bfff'] }] } });
 
         const blueSoilCtx = document.getElementById('blueSoilChart').getContext('2d');
-        new Chart(blueSoilCtx, {
-            type: 'pie',
-            data: {
-                labels: ['Children (3-17)', 'Adults (18-59)', 'Seniors (60+)'],
-                datasets: [{
-                    data: [10, 20, 70],
-                    backgroundColor: ['#1e90ff', '#87cefa', '#104e8b']
-                }]
-            }
-        });
+        new Chart(blueSoilCtx, { type: 'pie', data: { labels: ['Infant (0-2)', 'Children (3-17)', 'Young Adults (18-39)', 'Middle-Age Adults (40-59)', 'Seniors (60+)'], datasets: [{ data: [10, 20, 70, 50, 10], backgroundColor: ['#1e90ff', '#87cefa', '#104e8b', '#4682b4', '#00bfff'] }] } });
 
         const hangingCoffinsCtx = document.getElementById('hangingCoffinsChart').getContext('2d');
-        new Chart(hangingCoffinsCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Children (3-17)', 'Adults (18-59)', 'Seniors (60+)'],
-                datasets: [{
-                    data: [60, 30, 10],
-                    backgroundColor: ['#1e90ff', '#00bfff', '#104e8b']
-                }]
-            }
-        });
+        new Chart(hangingCoffinsCtx, { type: 'doughnut', data: { labels: ['Infant (0-2)', 'Children (3-17)', 'Young Adults (18-39)', 'Middle-Age Adults (40-59)', 'Seniors (60+)'], datasets: [{ data: [5, 30, 100, 50, 10], backgroundColor: ['#1e90ff', '#00bfff', '#104e8b', '#4682b4', '#00bfff'] }] } });
     </script>
 
 </body>
