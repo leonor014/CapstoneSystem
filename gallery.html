@@ -4,94 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sagada Gallery</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-
-        header {
-            background-color: #1e90ff;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 2rem;
-        }
-
-        .gallery-container {
-            max-width: 100%;
-            margin: 20px auto;
-            padding: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .carousel {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-            width: 400%;
-        }
-
-        .carousel img {
-            flex-shrink: 0;
-            width: 100%;
-            height: 500px;
-            object-fit: contain;
-        }
-
-        .navigation {
-            position: absolute;
-            top: 50%;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            transform: translateY(-50%);
-        }
-
-        .navigation button {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 50%;
-        }
-
-        .navigation button:hover {
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-
-        .dots {
-            text-align: center;
-            margin-top: 10px;
-        }
-
-        .dots span {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            margin: 0 5px;
-            background-color: #ccc;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .dots .active {
-            background-color: #1e90ff;
-        }
-    </style>
+    <link rel="stylesheet" href="css/gallery.css">
 </head>
 <body>
     <header>
@@ -100,17 +13,17 @@
 
     <div class="gallery-container">
         <div class="carousel">
-            <img src="church.jpg" alt="Church">
-            <img src="church1.jpg" alt="Church">
-            <img src="blue.jpg" alt="Blue Soil">
-            <img src="pottery.jpg" alt="Sagada Pottery">
-            <img src="su.jpg" alt="Sumaguing Cave">
-            <img src="su2.jpg" alt="Sumaguing Cave>
-            <img src="marl.jpg" alt="Marlboro Hills">
-            <img src="bokong-falls.jpg" alt="Bokong Falls">
-            <img src="sumaguing-cave.jpg" alt="Sumaguing Cave">
-            <img src="hanging-coffins.jpg" alt="Hanging Coffins">
-            <img src="kiltepan-viewpoint.jpg "Kiltepan Viewpoint">
+            <img src="images/church.jpg" alt="Church">
+            <img src="images/church1.jpg" alt="Church">
+            <img src="images/blue.jpg" alt="Blue Soil">
+            <img src="images/pottery.jpg" alt="Sagada Pottery">
+            <img src="images/su.jpg" alt="Sumaguing Cave">
+            <img src="images/su2.jpg" alt="Sumaguing Cave">
+            <img src="images/marl.jpg" alt="Marlboro Hills">
+            <img src="images/bokong-falls.jpg" alt="Bokong Falls">
+            <img src="images/sumaguing-cave.jpg" alt="Sumaguing Cave">
+            <img src="images/hanging-coffins.jpg" alt="Hanging Coffins">
+            <img src="images/kiltepan-viewpoint.jpg" alt="Kiltepan Viewpoint">
             
             
         </div>

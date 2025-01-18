@@ -1,0 +1,90 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #b3bac1;
+}
+
+/* Header styles */
+header {
+    background-color: #1e90ff;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+header p {
+    margin: 5px 0 0;
+    font-size: 1.2rem;
+}
+
+/* Analytics Container */
+.analytics-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.chart-title, .site-title {
+    cursor: pointer;
+    padding: 15px;
+    background: #1e90ff;
+    color: white;
+    margin: 10px 0;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+}
+
+.chart-title:hover, .site-title:hover {
+    background: #104e8b;
+}
+
+.chart-content, .site-content {
+    display: none; /* Initially hide the content */
+    margin: 20px 0;
+    padding: 20px;
+    background: rgb(235, 232, 232);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.spot {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.spot img {
+    max-width: 200px;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+
+.spot-info {
+    flex: 1;
+}
+
+.spot-info h3 {
+    color: #1e90ff;
+    margin: 0 0 10px;
+}
+
+.spot-info p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+canvas {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+}

@@ -1,0 +1,86 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+/* Header styles */
+header {
+    background-color: #1e90ff;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+header p {
+    margin: 5px 0 0;
+    font-size: 1.2rem;
+}
+
+/* Tourist Spots Section */
+.spots-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.spot {
+    display: flex;
+    flex-wrap: wrap;
+    background: #fff;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.spot img {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+.spot-content {
+    padding: 20px;
+    flex: 1;
+}
+
+.spot-content h2 {
+    margin-top: 0;
+    color: #1e90ff;
+    font-size: 1.8rem;
+}
+
+.spot-content p {
+    line-height: 1.6;
+    margin: 10px 0 0;
+}
+
+/* Back Button */
+.back-button {
+    display: inline-block;
+    margin: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    color: white;
+    background: #1e90ff;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background: #104e8b;
+}
