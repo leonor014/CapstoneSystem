@@ -82,7 +82,7 @@
 
                 <label>Region:</label>
                 <select id="region" required>
-                    <option value="">Select region</option>
+                    <option value="">Select Region</option>
                 </select>
 
                 <label>Contact Number:</label>
@@ -111,7 +111,7 @@
 
                 <label>Region:</label>
                 <select id="groupRegion" required>
-                    <option value="">Select region</option>
+                    <option value=""></option>
                 </select>
 
                 <label>Contact Number:</label>
@@ -191,7 +191,7 @@
         countryDropdowns.forEach(dropdown => {
             dropdown.addEventListener("change", function () {
                 const regionDropdown = this.id === "country" ? document.getElementById("region") : document.getElementById("groupRegion");
-                regionDropdown.innerHTML = "<option value=''>Select region</option>";
+                regionDropdown.innerHTML = "null";
                 let regions;
 
                 if (this.value === "Philippines") {
