@@ -1,90 +1,68 @@
-/* General Styles */
 body {
+    font-family: Arial, sans-serif;
     margin: 0;
-    font-family: 'Arial', sans-serif;
-    background-color: #f8f9fa;
-    color: #b3bac1;
+    padding: 0;
+    background-color: #f9f9f9;
 }
 
-/* Header styles */
 header {
-    background-color: #1e90ff;
-    color: white;
-    padding: 20px;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 0;
 }
 
 header h1 {
     margin: 0;
-    font-size: 2.5rem;
 }
 
-header p {
-    margin: 5px 0 0;
-    font-size: 1.2rem;
-}
-
-/* Analytics Container */
-.analytics-container {
-    max-width: 1200px;
-    margin: 20px auto;
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
     padding: 20px;
+    background-color: #e8f5e9;
 }
 
-.chart-title, .site-title {
-    cursor: pointer;
-    padding: 15px;
-    background: #1e90ff;
-    color: white;
-    margin: 10px 0;
+.grid-item {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     text-align: center;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s;
-}
-
-.chart-title:hover, .site-title:hover {
-    background: #104e8b;
-}
-
-.chart-content, .site-content {
-    display: none; /* Initially hide the content */
-    margin: 20px 0;
     padding: 20px;
-    background: rgb(235, 232, 232);
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.spot {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px;
+.grid-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    margin-bottom: 10px;
 }
 
-.spot img {
-    max-width: 200px;
-    border-radius: 10px;
-    margin-right: 20px;
+.grid-item h3 {
+    font-size: 18px;
+    margin: 10px 0;
 }
 
-.spot-info {
-    flex: 1;
+.grid-item button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
-.spot-info h3 {
-    color: #1e90ff;
-    margin: 0 0 10px;
+.grid-item button:hover {
+    background-color: #45a049;
 }
 
-.spot-info p {
-    margin: 0;
-    line-height: 1.6;
-}
-
-canvas {
-    width: 100%;
-    max-width: 600px;
-    height: auto;
+footer {
+    text-align: center;
+    padding: 10px 0;
+    background-color: #4CAF50;
+    color: white;
+    margin-top: 20px;
 }
