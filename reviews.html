@@ -35,6 +35,7 @@
         const reviewForm = document.getElementById('reviewForm');
         const reviewList = document.getElementById('reviewList');
         const REVIEWS_KEY = 'touristReviews';
+        const USER_ID = `user_${Date.now()}`; // Unique user ID for this session
 
         // Load reviews from localStorage
         function loadReviews() {
@@ -69,37 +70,41 @@
                 reviewDiv.appendChild(imageElement);
             }
 
-            const editButton = document.createElement('button');
-            editButton.textContent = 'Edit';
-            editButton.classList.add('edit-btn');
-            editButton.addEventListener('click', () => {
-                commentPara.contentEditable = "true";
-                commentPara.focus();
-            });
+            // Add buttons only if the review belongs to the current user
+            if (review.userId === USER_ID) {
+                const editButton = document.createElement('button');
+                editButton.textContent = 'Edit';
+                editButton.classList.add('edit-btn');
+                editButton.addEventListener('click', () => {
+                    commentPara.contentEditable = "true";
+                    commentPara.focus();
+                });
 
-            const saveButton = document.createElement('button');
-            saveButton.textContent = 'Save';
-            saveButton.classList.add('save-btn');
-            saveButton.addEventListener('click', () => {
-                commentPara.contentEditable = "false";
-                review.comment = commentPara.textContent.replace('Comment: ', '');
-                updateReview(review);
-            });
+                const saveButton = document.createElement('button');
+                saveButton.textContent = 'Save';
+                saveButton.classList.add('save-btn');
+                saveButton.addEventListener('click', () => {
+                    commentPara.contentEditable = "false";
+                    review.comment = commentPara.textContent.replace('Comment: ', '');
+                    updateReview(review);
+                });
 
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Delete';
-            deleteButton.classList.add('delete-btn');
-            deleteButton.addEventListener('click', () => {
-                deleteReview(review);
-                reviewList.removeChild(reviewDiv);
-            });
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.classList.add('delete-btn');
+                deleteButton.addEventListener('click', () => {
+                    deleteReview(review);
+                    reviewList.removeChild(reviewDiv);
+                });
+
+                reviewDiv.appendChild(editButton);
+                reviewDiv.appendChild(saveButton);
+                reviewDiv.appendChild(deleteButton);
+            }
 
             reviewDiv.appendChild(commentPara);
             reviewDiv.appendChild(ratingPara);
             reviewDiv.appendChild(datePara);
-            reviewDiv.appendChild(editButton);
-            reviewDiv.appendChild(saveButton);
-            reviewDiv.appendChild(deleteButton);
 
             reviewList.appendChild(reviewDiv);
         }
@@ -121,14 +126,15 @@
                         comment,
                         rating,
                         date,
-                        image: event.target.result // Base64 encoded string
+                        image: event.target.result, // Base64 encoded string
+                        userId: USER_ID
                     };
 
                     saveAndDisplayReview(newReview);
                 };
                 reader.readAsDataURL(imageFile);
             } else {
-                const newReview = { comment, rating, date, image: null };
+                const newReview = { comment, rating, date, image: null, userId: USER_ID };
                 saveAndDisplayReview(newReview);
             }
 
@@ -146,7 +152,7 @@
         // Update a review in localStorage
         function updateReview(updatedReview) {
             const reviews = JSON.parse(localStorage.getItem(REVIEWS_KEY)) || [];
-            const reviewIndex = reviews.findIndex(r => r.date === updatedReview.date);
+            const reviewIndex = reviews.findIndex(r => r.date === updatedReview.date && r.userId === updatedReview.userId);
             if (reviewIndex !== -1) {
                 reviews[reviewIndex] = updatedReview;
                 saveReviews(reviews);
@@ -156,7 +162,7 @@
         // Delete a review from localStorage
         function deleteReview(reviewToDelete) {
             const reviews = JSON.parse(localStorage.getItem(REVIEWS_KEY)) || [];
-            const updatedReviews = reviews.filter(review => review.date !== reviewToDelete.date);
+            const updatedReviews = reviews.filter(review => review.date !== reviewToDelete.date || review.userId !== reviewToDelete.userId);
             saveReviews(updatedReviews);
         }
 
