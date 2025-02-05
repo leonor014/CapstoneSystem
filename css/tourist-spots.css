@@ -65,6 +65,40 @@ header p {
     margin: 10px 0 0;
 }
 
+/* Table Styles */
+.table {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-size: 1rem;
+    text-align: left;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 15px;
+}
+
+th {
+    background-color: #1e90ff;
+    color: white;
+    font-size: 1.2rem;
+}
+
+td {
+    color: #333;
+    line-height: 1.6;
+}
+
+tr:nth-child(even) {
+    background-color: #f4f4f9;
+}
+
 /* Back Button */
 .back-button {
     display: inline-block;
