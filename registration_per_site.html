@@ -1,134 +1,152 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html> 
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tourist Site Registration</title>
     <link rel="stylesheet" href="css/per_site.css">
-    <script type="module" src="js/per-site-registration.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js" defer></script>
 </head>
 <body>
     <div class="container">
-        <h1>Tourist Site Registration</h1>
-        
-        <form id="siteRegistrationForm">
-            <label for="registrationNumber">Enter Registration Number:</label>
-            <input type="text" id="registrationNumber" placeholder="Enter registration number" required>
-            
-            <button type="button" id="fetchDetails">Fetch Details</button>
+        <h2>Tourist Site Registration</h2>
+        <label for="registrationNumber">Enter Registration Number:</label>
+        <input type="text" id="registrationNumber" placeholder="Enter your registration number">
+        <button onclick="fetchDetails()">Fetch Details</button>
 
-            <div id="detailsSection" style="display:none; margin-top:20px;">
-                <h3>Tourist Details</h3>
-                <div id="touristDetails"></div>
+        <p id="error" class="error"></p>
 
-                <label>Mark Attendance:</label>
-                <div id="attendanceSection"></div>
+        <div id="touristDetails" class="tourist-details" style="display:none;">
+            <h3>Tourist Details</h3>
+            <p><strong>Registered Tourists:</strong></p>
 
-                <button type="submit">Submit Attendance</button>
-            </div>
-        </form>
+            <!-- 🔹 TABLE FOR TOURIST NAMES -->
+            <table id="touristTable" border="1">
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>Tourist Name</th>
+                    </tr>
+                </thead>
+                <tbody id="touristList"></tbody>
+            </table>
+
+            <label for="siteSelect">Select Tourist Site:</label>
+            <select id="siteSelect">
+                <option value="Site A">Site A</option>
+                <option value="Site B">Site B</option>
+                <option value="Site C">Site C</option>
+            </select>
+            <button onclick="submitAttendance()">Submit Attendance</button>
+        </div>
     </div>
 
-    <!-- <script>
-        // Simulate database for fetched details
-        const mockDatabase = {
-            "REG-12345-I": {
-                type: "Individual",
-                details: {
-                    name: "John Doe",
-                    dob: "1990-01-01",
-                    sex: "Male",
-                    country: "Philippines",
-                    region: "NCR",
-                    contact: "09171234567",
-                    email: "johndoe@example.com",
-                },
-                members: []
-            },
-            "REG-67890-G": {
-                type: "Group",
-                details: {
-                    groupName: "Adventure Seekers",
-                    country: "Philippines",
-                    region: "CAR",
-                    contact: "09178889999",
-                    email: "group@example.com",
-                },
-                members: [
-                    { name: "Alice", dob: "1995-06-12", sex: "Female" },
-                    { name: "Bob", dob: "1992-03-08", sex: "Male" },
-                ]
-            }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCt1EginvMZvYdlrseVPBiyvfto4bvED5Y",
+            authDomain: "sagadatouristregister.firebaseapp.com",
+            projectId: "sagadatouristregister",
+            storageBucket: "sagadatouristregister.firebasestorage.app",
+            messagingSenderId: "875774905793",
+            appId: "1:875774905793:web:d4fe2ea42fedba8d473340",
+            measurementId: "G-2VF5GCQGZ1"
         };
 
-        // Handle fetch details
-        document.getElementById("fetchDetails").addEventListener("click", () => {
-            const regNumber = document.getElementById("registrationNumber").value;
-            const tourist = mockDatabase[regNumber];
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-            if (tourist) {
-                const detailsSection = document.getElementById("detailsSection");
-                const touristDetails = document.getElementById("touristDetails");
-                const attendanceSection = document.getElementById("attendanceSection");
+        // 🔹 Fetch Tourist Details and Display in Table
+        async function fetchDetails() {
+            document.getElementById("error").textContent = "";
+            let regNumber = document.getElementById("registrationNumber").value.trim();
 
-                touristDetails.innerHTML = "";
-                attendanceSection.innerHTML = "";
-
-                if (tourist.type === "Individual") {
-                    const details = tourist.details;
-                    touristDetails.innerHTML = `
-                        <p><strong>Name:</strong> ${details.name}</p>
-                        <p><strong>Date of Birth:</strong> ${details.dob}</p>
-                        <p><strong>Sex:</strong> ${details.sex}</p>
-                        <p><strong>Country:</strong> ${details.country}</p>
-                        <p><strong>Region:</strong> ${details.region}</p>
-                        <p><strong>Contact:</strong> ${details.contact}</p>
-                        <p><strong>Email:</strong> ${details.email}</p>
-                    `;
-
-                    attendanceSection.innerHTML = `
-                        <div class="member">
-                            <label>
-                                <input type="checkbox" name="attendance" value="${details.name}" checked> ${details.name}
-                            </label>
-                        </div>
-                    `;
-                } else if (tourist.type === "Group") {
-                    const groupDetails = tourist.details;
-                    touristDetails.innerHTML = `
-                        <p><strong>Group Name:</strong> ${groupDetails.groupName}</p>
-                        <p><strong>Country:</strong> ${groupDetails.country}</p>
-                        <p><strong>Region:</strong> ${groupDetails.region}</p>
-                        <p><strong>Contact:</strong> ${groupDetails.contact}</p>
-                        <p><strong>Email:</strong> ${groupDetails.email}</p>
-                    `;
-
-                    tourist.members.forEach(member => {
-                        attendanceSection.innerHTML += `
-                            <div class="member">
-                                <p><strong>Name:</strong> ${member.name}</p>
-                                <p><strong>Date of Birth:</strong> ${member.dob}</p>
-                                <p><strong>Sex:</strong> ${member.sex}</p>
-                                <label>
-                                    <input type="checkbox" name="attendance" value="${member.name}" checked> Mark Present
-                                </label>
-                            </div>
-                        `;
-                    });
-                }
-
-                detailsSection.style.display = "block";
-            } else {
-                alert("Registration number not found.");
+            if (!regNumber) {
+                document.getElementById("error").textContent = "Please enter a registration number.";
+                return;
             }
-        });
 
-        // Handle attendance submission
-        document.getElementById("siteRegistrationForm").addEventListener("submit", (event) => {
-            event.preventDefault();
-            const attendance = Array.from(document.querySelectorAll("input[name='attendance']:checked"))
-                .map(input => input.value);
+            try {
+                // Query Firestore
+                const q = query(collection(db, "registrations"), where("registrationNumber", "==", regNumber));
+                const querySnapshot = await getDocs(q);
 
-            alert(`Attendance submitted for: ${attendance.join(", ")}`);
-        });
-    </script> -->
+                if (!querySnapshot.empty) {
+                    let docSnap = querySnapshot.docs[0]; 
+                    let tourists = docSnap.data().tourists || [];
+
+                    let touristListDiv = document.getElementById("touristList");
+                    touristListDiv.innerHTML = ""; // Clear previous entries
+
+                    tourists.forEach(name => {
+                        let row = document.createElement("tr");
+
+                        let checkboxCell = document.createElement("td");
+                        let checkbox = document.createElement("input");
+                        checkbox.type = "checkbox";
+                        checkbox.value = name;
+                        checkbox.id = name;
+
+                        let label = document.createElement("label");
+                        label.setAttribute("for", name);
+                        label.textContent = name;
+
+                        checkboxCell.appendChild(checkbox);
+                        let nameCell = document.createElement("td");
+                        nameCell.appendChild(label);
+
+                        row.appendChild(checkboxCell);
+                        row.appendChild(nameCell);
+                        touristListDiv.appendChild(row);
+                    });
+
+                    document.getElementById("touristDetails").style.display = "block";
+                } else {
+                    document.getElementById("error").textContent = "Registration number not found.";
+                }
+            } catch (error) {
+                document.getElementById("error").textContent = "Error fetching data: " + error.message;
+                console.error("Fetch Error:", error);
+            }
+        }
+
+        // 🔹 Submit Attendance
+        async function submitAttendance() {
+            let regNumber = document.getElementById("registrationNumber").value.trim();
+            let site = document.getElementById("siteSelect").value;
+            let selectedTourists = [];
+            
+            document.querySelectorAll("#touristList input:checked").forEach(checkbox => {
+                selectedTourists.push(checkbox.value);
+            });
+
+            if (selectedTourists.length === 0) {
+                document.getElementById("error").textContent = "Please select at least one tourist.";
+                return;
+            }
+
+            try {
+                await setDoc(doc(db, "attendance", regNumber), {
+                    site: site,
+                    attendees: selectedTourists
+                });
+
+                alert(`Attendance marked successfully for ${selectedTourists.join(", ")} at ${site}.`);
+            } catch (error) {
+                document.getElementById("error").textContent = "Error marking attendance: " + error.message;
+                console.error("Submit Error:", error);
+            }
+        }
+
+        // Attach functions to global scope
+        window.fetchDetails = fetchDetails;
+        window.submitAttendance = submitAttendance;
+    </script>
+
 </body>
 </html>

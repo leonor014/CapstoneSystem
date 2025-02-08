@@ -5,8 +5,100 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tourist Review Feature</title>
     <link rel="stylesheet" href="css/reviews.css">
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+    <script type="module">
+        // Import Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCt1EginvMZvYdlrseVPBiyvfto4bvED5Y",
+            authDomain: "sagadatouristregister.firebaseapp.com",
+            projectId: "sagadatouristregister",
+            storageBucket: "sagadatouristregister.firebasestorage.app",
+            messagingSenderId: "875774905793",
+            appId: "1:875774905793:web:d4fe2ea42fedba8d473340",
+            measurementId: "G-2VF5GCQGZ1"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const reviewForm = document.getElementById('reviewForm');
+            const reviewList = document.getElementById('reviewList');
+
+            // Load reviews from Firestore
+            async function loadReviews() {
+                reviewList.innerHTML = "";
+                const querySnapshot = await getDocs(collection(db, "reviews"));
+                querySnapshot.forEach(doc => displayReview(doc.id, doc.data()));
+            }
+
+            // Display a review
+            function displayReview(id, review) {
+                const reviewDiv = document.createElement('div');
+                reviewDiv.classList.add('review');
+
+                const commentPara = document.createElement('p');
+                commentPara.textContent = `Comment: ${review.comment}`;
+
+                const ratingPara = document.createElement('p');
+                ratingPara.textContent = `Rating: ${review.rating || 'No rating'}`;
+
+                const datePara = document.createElement('p');
+                datePara.textContent = `Date: ${review.date}`;
+
+                if (review.imageBase64) {
+                    const imageElement = document.createElement('img');
+                    imageElement.src = review.imageBase64;
+                    imageElement.alt = "Attached Image";
+                    imageElement.style.maxWidth = "200px";
+                    reviewDiv.appendChild(imageElement);
+                }
+
+                reviewDiv.appendChild(commentPara);
+                reviewDiv.appendChild(ratingPara);
+                reviewDiv.appendChild(datePara);
+                reviewList.appendChild(reviewDiv);
+            }
+
+            // Submit a new review
+            reviewForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const comment = document.getElementById('comment').value;
+                const rating = document.querySelector('input[name="rating"]:checked')?.value;
+                const date = new Date().toLocaleString();
+                const imageInput = document.getElementById('image');
+                const imageFile = imageInput.files[0];
+
+                let imageBase64 = null;
+                if (imageFile) {
+                    const reader = new FileReader();
+                    reader.onload = async function (event) {
+                        imageBase64 = event.target.result;
+                        await saveReview(comment, rating, date, imageBase64);
+                    };
+                    reader.readAsDataURL(imageFile);
+                } else {
+                    await saveReview(comment, rating, date, null);
+                }
+
+                reviewForm.reset();
+            });
+
+            // Function to save review
+            async function saveReview(comment, rating, date, imageBase64) {
+                const newReview = { comment, rating, date, imageBase64 };
+                await addDoc(collection(db, "reviews"), newReview);
+                loadReviews();
+            }
+
+            loadReviews();
+        });
+    </script>
 </head>
 <body>
     <div class="review-container">
@@ -32,85 +124,5 @@
             <h3>Reviews</h3>
         </div>
     </div>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        const reviewForm = document.getElementById('reviewForm');
-        const reviewList = document.getElementById('reviewList');
-
-        reviewForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            const comment = document.getElementById('comment').value;
-            const rating = document.querySelector('input[name="rating"]:checked')?.value;
-            const date = new Date().toLocaleString();
-            const userId = `user_${Date.now()}`;
-            const imageInput = document.getElementById('image');
-            const imageFile = imageInput.files[0];
-            let imageUrl = null;
-
-            if (imageFile) {
-                const reader = new FileReader();
-                reader.onload = async function(event) {
-                    imageUrl = event.target.result;
-                    await db.collection("reviews").add({ comment, rating, date, image: imageUrl, userId });
-                    loadReviews();
-                };
-                reader.readAsDataURL(imageFile);
-            } else {
-                await db.collection("reviews").add({ comment, rating, date, image: null, userId });
-                loadReviews();
-            }
-
-            reviewForm.reset();
-        });
-
-        async function loadReviews() {
-            reviewList.innerHTML = "<h3>Reviews</h3>";
-            const snapshot = await db.collection("reviews").get();
-            snapshot.forEach(doc => {
-                displayReview(doc.id, doc.data());
-            });
-        }
-
-        function displayReview(id, review) {
-            const reviewDiv = document.createElement('div');
-            reviewDiv.classList.add('review');
-            
-            const commentPara = document.createElement('p');
-            commentPara.textContent = `Comment: ${review.comment}`;
-            
-            const ratingPara = document.createElement('p');
-            ratingPara.textContent = `Rating: ${review.rating || 'No rating'}`;
-            
-            const datePara = document.createElement('p');
-            datePara.textContent = `Date: ${review.date}`;
-            
-            if (review.image) {
-                const img = document.createElement('img');
-                img.src = review.image;
-                img.alt = "Attached Image";
-                reviewDiv.appendChild(img);
-            }
-            
-            reviewDiv.appendChild(commentPara);
-            reviewDiv.appendChild(ratingPara);
-            reviewDiv.appendChild(datePara);
-            
-            reviewList.appendChild(reviewDiv);
-        }
-
-        loadReviews();
-    </script>
 </body>
 </html>
