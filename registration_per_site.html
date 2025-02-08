@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -21,7 +21,7 @@
             <h3>Tourist Details</h3>
             <p><strong>Registered Tourists:</strong></p>
 
-            <!-- 🔹 TABLE FOR TOURIST NAMES -->
+            <!-- Table for tourist names -->
             <table id="touristTable" border="1">
                 <thead>
                     <tr>
@@ -34,9 +34,22 @@
 
             <label for="siteSelect">Select Tourist Site:</label>
             <select id="siteSelect">
-                <option value="Site A">Site A</option>
-                <option value="Site B">Site B</option>
-                <option value="Site C">Site C</option>
+                <option value="Paytokan Walk">Paytokan Walk</option>
+                <option value="Hanging Coffins">Hanging Coffins</option>
+                <option value="Langsayan">Langsayan</option>
+                <option value="Marlboro">Marlboro</option>
+                <option value="Marlboro to Blue Soil">Marlboro to Blue Soil</option>
+                <option value="Blue Soil">Blue Soil</option>
+                <option value="Ampacao">Ampacao</option>
+                <option value="Nabas-ang to Ampacao">Nabas-ang to Ampacao</option>
+                <option value="Bomod-ok Falls">Bomod-ok Falls</option>
+                <option value="Bokong Falls">Bokong Falls</option>
+                <option value="Pongas Falls">Pongas Falls</option>
+                <option value="Sumaguing Cave">Sumaguing Cave</option>
+                <option value="Lumiang Cave">Lumiang Cave</option>
+                <option value="Balangagan Cave">Balangagan Cave</option>
+                <option value="Sumaguing Entrance - Sight Seeing">Sumaguing Entrance - Sight Seeing</option>
+                <option value="Lumiang Entrance - Sight Seeing">Lumiang Entrance - Sight Seeing</option>
             </select>
             <button onclick="submitAttendance()">Submit Attendance</button>
         </div>
@@ -61,9 +74,10 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 🔹 Fetch Tourist Details and Display in Table
+        // Fetch Tourist Details and Display in Table
         async function fetchDetails() {
             document.getElementById("error").textContent = "";
+            document.getElementById("touristList").innerHTML = ""; // Clear previous entries
             let regNumber = document.getElementById("registrationNumber").value.trim();
 
             if (!regNumber) {
@@ -72,37 +86,49 @@
             }
 
             try {
-                // Query Firestore
+                // Query Firestore for documents where registrationNumber matches
                 const q = query(collection(db, "registrations"), where("registrationNumber", "==", regNumber));
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
-                    let docSnap = querySnapshot.docs[0]; 
-                    let tourists = docSnap.data().tourists || [];
-
                     let touristListDiv = document.getElementById("touristList");
                     touristListDiv.innerHTML = ""; // Clear previous entries
 
-                    tourists.forEach(name => {
-                        let row = document.createElement("tr");
+                    querySnapshot.forEach(docSnap => {
+                        let data = docSnap.data();
+                        let tourists = [];
 
-                        let checkboxCell = document.createElement("td");
-                        let checkbox = document.createElement("input");
-                        checkbox.type = "checkbox";
-                        checkbox.value = name;
-                        checkbox.id = name;
+                        // Check if it's an individual registration
+                        if (data.fullName) {
+                            tourists.push(data.fullName);
+                        }
+                        // Check if it's a group registration (from groupMembers array)
+                        else if (data.groupMembers && Array.isArray(data.groupMembers)) {
+                            tourists = data.groupMembers.map(member => member.memberName);
+                        }
 
-                        let label = document.createElement("label");
-                        label.setAttribute("for", name);
-                        label.textContent = name;
+                        // Populate the table with tourist names
+                        tourists.forEach(name => {
+                            let row = document.createElement("tr");
 
-                        checkboxCell.appendChild(checkbox);
-                        let nameCell = document.createElement("td");
-                        nameCell.appendChild(label);
+                            let checkboxCell = document.createElement("td");
+                            let checkbox = document.createElement("input");
+                            checkbox.type = "checkbox";
+                            checkbox.value = name;
+                            checkbox.id = name;
 
-                        row.appendChild(checkboxCell);
-                        row.appendChild(nameCell);
-                        touristListDiv.appendChild(row);
+                            let label = document.createElement("label");
+                            label.setAttribute("for", name);
+                            label.textContent = name;
+
+                            checkboxCell.appendChild(checkbox);
+                            let nameCell = document.createElement("td");
+                            nameCell.appendChild(label);
+
+                            row.appendChild(checkboxCell);
+                            row.appendChild(nameCell);
+                            touristListDiv.appendChild(row);
+                        });
                     });
 
                     document.getElementById("touristDetails").style.display = "block";
@@ -115,7 +141,7 @@
             }
         }
 
-        // 🔹 Submit Attendance
+        // Submit Attendance & Clear Form
         async function submitAttendance() {
             let regNumber = document.getElementById("registrationNumber").value.trim();
             let site = document.getElementById("siteSelect").value;
@@ -137,6 +163,11 @@
                 });
 
                 alert(`Attendance marked successfully for ${selectedTourists.join(", ")} at ${site}.`);
+
+                // Clear form after submission
+                document.getElementById("registrationNumber").value = "";
+                document.getElementById("touristDetails").style.display = "none";
+                document.getElementById("touristList").innerHTML = "";
             } catch (error) {
                 document.getElementById("error").textContent = "Error marking attendance: " + error.message;
                 console.error("Submit Error:", error);
