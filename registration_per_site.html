@@ -1,4 +1,4 @@
-<!DOCTYPE html>   
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -59,7 +59,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs, doc, setDoc, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCt1EginvMZvYdlrseVPBiyvfto4bvED5Y",
@@ -75,24 +75,21 @@
         const db = getFirestore(app);
 
         function calculateAge(dob) {
-            if (!dob) return "-";
-            const birthDate = new Date(dob);
-            const today = new Date();
+            let birthDate = new Date(dob);
+            let today = new Date();
             let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
+            let monthDiff = today.getMonth() - birthDate.getMonth();
             if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
                 age--;
             }
             return age;
         }
 
-
-        const countryToNationality = {
-            "Afghanistan": "Afghan", "Albania": "Albanian", "Algeria": "Algerian", "Argentina": "Argentine", "Australia": "Australian", "Austria": "Austrian", "Bangladesh": "Bangladeshi", "Belgium": "Belgian", "Brazil": "Brazilian", "Canada": "Canadian", "China": "Chinese", "Colombia": "Colombian", "Denmark": "Danish", "Egypt": "Egyptian", "Finland": "Finnish", "France": "French", "Germany": "German", "Greece": "Greek", "India": "Indian", "Indonesia": "Indonesian", "Iran": "Iranian", "Iraq": "Iraqi", "Ireland": "Irish", "Italy": "Italian", "Japan": "Japanese", "Malaysia": "Malaysian", "Mexico": "Mexican", "Netherlands": "Dutch", "New Zealand": "New Zealander", "Norway": "Norwegian", "Pakistan": "Pakistani", "Peru": "Peruvian", "Philippines": "Filipino", "Poland": "Polish", "Portugal": "Portuguese", "Russia": "Russian", "Saudi Arabia": "Saudi", "Singapore": "Singaporean", "South Africa": "South African", "South Korea": "South Korean", "Spain": "Spanish", "Sri Lanka": "Sri Lankan", "Sweden": "Swedish", "Switzerland": "Swiss", "Thailand": "Thai", "Turkey": "Turkish", "United Kingdom": "British", "United States": "American", "Vietnam": "Vietnamese", "Zimbabwe": "Zimbabwean"
-        };
-
         function getNationality(country) {
-            return countryToNationality[country] || "Unknown";
+            const nationalityMap = {
+                "Afghanistan": "Afghan", "Albania": "Albanian", "Algeria": "Algerian", "Argentina": "Argentine", "Australia": "Australian", "Austria": "Austrian", "Bangladesh": "Bangladeshi", "Belgium": "Belgian", "Brazil": "Brazilian", "Canada": "Canadian", "China": "Chinese", "Denmark": "Danish", "Egypt": "Egyptian", "France": "French", "Germany": "German", "India": "Indian", "Indonesia": "Indonesian", "Italy": "Italian", "Japan": "Japanese", "Mexico": "Mexican", "Netherlands": "Dutch", "Norway": "Norwegian", "Pakistan": "Pakistani", "Philippines": "Filipino", "Russia": "Russian", "Saudi Arabia": "Saudi", "South Korea": "South Korean", "Spain": "Spanish", "Sweden": "Swedish", "Switzerland": "Swiss", "Thailand": "Thai", "United Kingdom": "British", "United States": "American", "Vietnam": "Vietnamese" 
+            };
+            return nationalityMap[country] || "Unknown";
         }
 
         async function fetchDetails() {
@@ -112,24 +109,29 @@
                 if (!querySnapshot.empty) {
                     let touristListDiv = document.getElementById("touristList");
                     touristListDiv.innerHTML = "";
-                    document.getElementById("touristDetails").style.display = "block";
 
                     querySnapshot.forEach(docSnap => {
                         let data = docSnap.data();
-                        let tourists = data.fullName ? [{...data, memberName: data.fullName, memberDOB: data.dateOfBirth, memberSex: data.sex, nationality: getNationality(data.country)}] : data.groupMembers.map(member => ({...member, nationality: getNationality(data.groupCountry)}));
+                        let tourists = [];
+
+                        if (data.fullName) {
+                            tourists.push({ name: data.fullName, age: calculateAge(data.dateOfBirth), sex: data.sex, nationality: getNationality(data.country) });
+                        } else if (data.groupMembers && Array.isArray(data.groupMembers)) {
+                            tourists = data.groupMembers.map(member => ({ name: member.memberName, age: calculateAge(member.memberDOB), sex: member.memberSex, nationality: getNationality(data.groupCountry) }));
+                        }
 
                         tourists.forEach(tourist => {
-                            let row = document.createElement("tr");
-                            row.innerHTML = `
-                                <td><input type="checkbox" value="${tourist.memberName}" id="${tourist.memberName}"></td>
-                                <td>${tourist.memberName || "Unknown"}</td>
-                                <td>${calculateAge(tourist.memberDOB)}</td>
-                                <td>${tourist.memberSex || "Unknown"}</td>
+                            let row = `<tr>
+                                <td><input type="checkbox" value="${tourist.name}"></td>
+                                <td>${tourist.name}</td>
+                                <td>${tourist.age}</td>
+                                <td>${tourist.sex}</td>
                                 <td>${tourist.nationality}</td>
-                            `;
-                            touristListDiv.appendChild(row);
+                            </tr>`;
+                            touristListDiv.innerHTML += row;
                         });
                     });
+                    document.getElementById("touristDetails").style.display = "block";
                 } else {
                     document.getElementById("error").textContent = "Registration number not found.";
                 }
@@ -139,40 +141,68 @@
         }
 
         async function submitAttendance() {
-            const selectedTourists = document.querySelectorAll('#touristList input:checked');
-            if (selectedTourists.length === 0) {
+            let selectedSite = document.getElementById("siteSelect").value;
+            let checkedTourists = document.querySelectorAll("#touristList input[type='checkbox']:checked");
+            let registrationNumber = document.getElementById("registrationNumber").value.trim();
+
+            if (checkedTourists.length === 0) {
                 alert("Please select at least one tourist.");
                 return;
             }
 
-            const site = document.getElementById("siteSelect").value;
-            const attendanceData = [];
-
-            selectedTourists.forEach(checkbox => {
-                const row = checkbox.closest("tr");
-                attendanceData.push({
-                    name: row.cells[1].textContent,
-                    age: row.cells[2].textContent,
-                    sex: row.cells[3].textContent,
-                    nationality: row.cells[4].textContent,
-                    site: site,
-                    timestamp: new Date().toISOString()
-                });
-            });
-
             try {
-                await addDoc(collection(db, "attendance"), { records: attendanceData });
-                alert("Attendance submitted successfully!");
+                let tourists = [];
+        
+                for (let checkbox of checkedTourists) {
+                    let row = checkbox.closest("tr").children;
+                    let name = row[1].textContent;
+                    let age = row[2].textContent;
+                    let sex = row[3].textContent;
+                    let nationality = row[4].textContent;
+
+                    tourists.push({
+                        name: name,
+                        age: parseInt(age),
+                        sex: sex,
+                        nationality: nationality
+                    });
+                }
+
+                if (tourists.length === 1) {
+                    // Individual Tourist Entry
+                    await addDoc(collection(db, "attendance"), {
+                        registrationNumber: registrationNumber,
+                        name: tourists[0].name,
+                        age: tourists[0].age,
+                        sex: tourists[0].sex,
+                        nationality: tourists[0].nationality,
+                        site: selectedSite,
+                        timestamp: new Date()
+                    });
+                } else {
+                    // Group Attendance Entry
+                    await addDoc(collection(db, "attendance"), {
+                        registrationNumber: registrationNumber,
+                        groupMembers: tourists, 
+                        site: selectedSite,
+                        timestamp: new Date()
+                    });
+                }
+
+                alert("Attendance recorded successfully!");
+                document.getElementById("touristDetails").style.display = "none"; 
+                document.getElementById("registrationNumber").value = ""; 
+                document.getElementById("touristList").innerHTML = "";  
             } catch (error) {
-                alert("Error submitting attendance: " + error.message);
+                console.error("Error submitting attendance: ", error);
+                alert("Error saving attendance. Please try again.");
             }
         }
 
 
+
         window.fetchDetails = fetchDetails;
-        window.submitAttendance = function() {
-            alert("Attendance submitted successfully!");
-        };
+        window.submitAttendance = submitAttendance;
     </script>
 </body>
 </html>
