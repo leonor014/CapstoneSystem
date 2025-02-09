@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html>   
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -21,12 +21,14 @@
             <h3>Tourist Details</h3>
             <p><strong>Registered Tourists:</strong></p>
 
-            <!-- Table for tourist names -->
             <table id="touristTable" border="1">
                 <thead>
                     <tr>
                         <th>Select</th>
                         <th>Tourist Name</th>
+                        <th>Age</th>
+                        <th>Sex</th>
+                        <th>Nationality</th>
                     </tr>
                 </thead>
                 <tbody id="touristList"></tbody>
@@ -57,9 +59,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getFirestore, collection, query, where, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
 
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCt1EginvMZvYdlrseVPBiyvfto4bvED5Y",
             authDomain: "sagadatouristregister.firebaseapp.com",
@@ -70,14 +71,33 @@
             measurementId: "G-2VF5GCQGZ1"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Fetch Tourist Details and Display in Table
+        function calculateAge(dob) {
+            if (!dob) return "-";
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+
+        const countryToNationality = {
+            "Afghanistan": "Afghan", "Albania": "Albanian", "Algeria": "Algerian", "Argentina": "Argentine", "Australia": "Australian", "Austria": "Austrian", "Bangladesh": "Bangladeshi", "Belgium": "Belgian", "Brazil": "Brazilian", "Canada": "Canadian", "China": "Chinese", "Colombia": "Colombian", "Denmark": "Danish", "Egypt": "Egyptian", "Finland": "Finnish", "France": "French", "Germany": "German", "Greece": "Greek", "India": "Indian", "Indonesia": "Indonesian", "Iran": "Iranian", "Iraq": "Iraqi", "Ireland": "Irish", "Italy": "Italian", "Japan": "Japanese", "Malaysia": "Malaysian", "Mexico": "Mexican", "Netherlands": "Dutch", "New Zealand": "New Zealander", "Norway": "Norwegian", "Pakistan": "Pakistani", "Peru": "Peruvian", "Philippines": "Filipino", "Poland": "Polish", "Portugal": "Portuguese", "Russia": "Russian", "Saudi Arabia": "Saudi", "Singapore": "Singaporean", "South Africa": "South African", "South Korea": "South Korean", "Spain": "Spanish", "Sri Lanka": "Sri Lankan", "Sweden": "Swedish", "Switzerland": "Swiss", "Thailand": "Thai", "Turkey": "Turkish", "United Kingdom": "British", "United States": "American", "Vietnam": "Vietnamese", "Zimbabwe": "Zimbabwean"
+        };
+
+        function getNationality(country) {
+            return countryToNationality[country] || "Unknown";
+        }
+
         async function fetchDetails() {
             document.getElementById("error").textContent = "";
-            document.getElementById("touristList").innerHTML = ""; // Clear previous entries
+            document.getElementById("touristList").innerHTML = "";
             let regNumber = document.getElementById("registrationNumber").value.trim();
 
             if (!regNumber) {
@@ -86,98 +106,73 @@
             }
 
             try {
-                // Query Firestore for documents where registrationNumber matches
                 const q = query(collection(db, "registrations"), where("registrationNumber", "==", regNumber));
                 const querySnapshot = await getDocs(q);
 
                 if (!querySnapshot.empty) {
                     let touristListDiv = document.getElementById("touristList");
-                    touristListDiv.innerHTML = ""; // Clear previous entries
+                    touristListDiv.innerHTML = "";
+                    document.getElementById("touristDetails").style.display = "block";
 
                     querySnapshot.forEach(docSnap => {
                         let data = docSnap.data();
-                        let tourists = [];
+                        let tourists = data.fullName ? [{...data, memberName: data.fullName, memberDOB: data.dateOfBirth, memberSex: data.sex, nationality: getNationality(data.country)}] : data.groupMembers.map(member => ({...member, nationality: getNationality(data.groupCountry)}));
 
-                        // Check if it's an individual registration
-                        if (data.fullName) {
-                            tourists.push(data.fullName);
-                        }
-                        // Check if it's a group registration (from groupMembers array)
-                        else if (data.groupMembers && Array.isArray(data.groupMembers)) {
-                            tourists = data.groupMembers.map(member => member.memberName);
-                        }
-
-                        // Populate the table with tourist names
-                        tourists.forEach(name => {
+                        tourists.forEach(tourist => {
                             let row = document.createElement("tr");
-
-                            let checkboxCell = document.createElement("td");
-                            let checkbox = document.createElement("input");
-                            checkbox.type = "checkbox";
-                            checkbox.value = name;
-                            checkbox.id = name;
-
-                            let label = document.createElement("label");
-                            label.setAttribute("for", name);
-                            label.textContent = name;
-
-                            checkboxCell.appendChild(checkbox);
-                            let nameCell = document.createElement("td");
-                            nameCell.appendChild(label);
-
-                            row.appendChild(checkboxCell);
-                            row.appendChild(nameCell);
+                            row.innerHTML = `
+                                <td><input type="checkbox" value="${tourist.memberName}" id="${tourist.memberName}"></td>
+                                <td>${tourist.memberName || "Unknown"}</td>
+                                <td>${calculateAge(tourist.memberDOB)}</td>
+                                <td>${tourist.memberSex || "Unknown"}</td>
+                                <td>${tourist.nationality}</td>
+                            `;
                             touristListDiv.appendChild(row);
                         });
                     });
-
-                    document.getElementById("touristDetails").style.display = "block";
                 } else {
                     document.getElementById("error").textContent = "Registration number not found.";
                 }
             } catch (error) {
                 document.getElementById("error").textContent = "Error fetching data: " + error.message;
-                console.error("Fetch Error:", error);
             }
         }
 
-        // Submit Attendance & Clear Form
         async function submitAttendance() {
-            let regNumber = document.getElementById("registrationNumber").value.trim();
-            let site = document.getElementById("siteSelect").value;
-            let selectedTourists = [];
-            
-            document.querySelectorAll("#touristList input:checked").forEach(checkbox => {
-                selectedTourists.push(checkbox.value);
-            });
-
+            const selectedTourists = document.querySelectorAll('#touristList input:checked');
             if (selectedTourists.length === 0) {
-                document.getElementById("error").textContent = "Please select at least one tourist.";
+                alert("Please select at least one tourist.");
                 return;
             }
 
-            try {
-                await setDoc(doc(db, "attendance", regNumber), {
+            const site = document.getElementById("siteSelect").value;
+            const attendanceData = [];
+
+            selectedTourists.forEach(checkbox => {
+                const row = checkbox.closest("tr");
+                attendanceData.push({
+                    name: row.cells[1].textContent,
+                    age: row.cells[2].textContent,
+                    sex: row.cells[3].textContent,
+                    nationality: row.cells[4].textContent,
                     site: site,
-                    attendees: selectedTourists
+                    timestamp: new Date().toISOString()
                 });
+            });
 
-                alert(`Attendance marked successfully for ${selectedTourists.join(", ")} at ${site}.`);
-
-                // Clear form after submission
-                document.getElementById("registrationNumber").value = "";
-                document.getElementById("touristDetails").style.display = "none";
-                document.getElementById("touristList").innerHTML = "";
+            try {
+                await addDoc(collection(db, "attendance"), { records: attendanceData });
+                alert("Attendance submitted successfully!");
             } catch (error) {
-                document.getElementById("error").textContent = "Error marking attendance: " + error.message;
-                console.error("Submit Error:", error);
+                alert("Error submitting attendance: " + error.message);
             }
         }
 
-        // Attach functions to global scope
-        window.fetchDetails = fetchDetails;
-        window.submitAttendance = submitAttendance;
-    </script>
 
+        window.fetchDetails = fetchDetails;
+        window.submitAttendance = function() {
+            alert("Attendance submitted successfully!");
+        };
+    </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,11 +6,9 @@
     <title>Tourist Review Feature</title>
     <link rel="stylesheet" href="css/reviews.css">
     <script type="module">
-        // Import Firebase SDK
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore.js";
 
-        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCt1EginvMZvYdlrseVPBiyvfto4bvED5Y",
             authDomain: "sagadatouristregister.firebaseapp.com",
@@ -21,7 +19,6 @@
             measurementId: "G-2VF5GCQGZ1"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
@@ -29,15 +26,14 @@
             const reviewForm = document.getElementById('reviewForm');
             const reviewList = document.getElementById('reviewList');
 
-            // Load reviews from Firestore
             async function loadReviews() {
                 reviewList.innerHTML = "";
-                const querySnapshot = await getDocs(collection(db, "reviews"));
-                querySnapshot.forEach(doc => displayReview(doc.id, doc.data()));
+                const q = query(collection(db, "reviews"), orderBy("date", "desc"));
+                const querySnapshot = await getDocs(q);
+                querySnapshot.forEach(doc => displayReview(doc.data()));
             }
 
-            // Display a review
-            function displayReview(id, review) {
+            function displayReview(review) {
                 const reviewDiv = document.createElement('div');
                 reviewDiv.classList.add('review');
 
@@ -64,36 +60,36 @@
                 reviewList.appendChild(reviewDiv);
             }
 
-            // Submit a new review
             reviewForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
 
                 const comment = document.getElementById('comment').value;
-                const rating = document.querySelector('input[name="rating"]:checked')?.value;
+                const rating = document.querySelector('input[name="rating"]:checked')?.value || 'No rating';
                 const date = new Date().toLocaleString();
                 const imageInput = document.getElementById('image');
                 const imageFile = imageInput.files[0];
 
                 let imageBase64 = null;
                 if (imageFile) {
-                    const reader = new FileReader();
-                    reader.onload = async function (event) {
-                        imageBase64 = event.target.result;
-                        await saveReview(comment, rating, date, imageBase64);
-                    };
-                    reader.readAsDataURL(imageFile);
-                } else {
-                    await saveReview(comment, rating, date, null);
+                    imageBase64 = await convertImageToBase64(imageFile);
                 }
 
+                await saveReview(comment, rating, date, imageBase64);
                 reviewForm.reset();
+                loadReviews(); 
             });
 
-            // Function to save review
+            async function convertImageToBase64(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
+                    reader.readAsDataURL(file);
+                });
+            }
+
             async function saveReview(comment, rating, date, imageBase64) {
-                const newReview = { comment, rating, date, imageBase64 };
-                await addDoc(collection(db, "reviews"), newReview);
-                loadReviews();
+                await addDoc(collection(db, "reviews"), { comment, rating, date, imageBase64 });
             }
 
             loadReviews();
