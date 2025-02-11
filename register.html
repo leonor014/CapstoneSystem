@@ -92,13 +92,13 @@
     </div>
 
     <script>
-        const countryList = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", 
-        "Bahamas, The", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burma", "Burundi", 
+        const countryList = ["Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan",
+        "Bahamas, The", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burma", "Burundi",
         "Cabo Verde", "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros", "Congo, Democratic Republic of the", "Congo, Republic of the", "Costa Rica", "Cote d'Ivoire (Ivory Coast)", "Croatia", "Cuba", "Cyprus", "Czech Republic",
         "Denmark", "Djibouti", "Dominica", "Dominican Republic",
         "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji", "Finland", "France",
         "Gabon", "Gambia, The", "Georgia", "Germany", "Ghana", "Greece", "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana",
-        "Haiti", "Honduras", "Hungary", 
+        "Haiti", "Honduras", "Hungary",
         "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy",
         "Jamaica", "Japan", "Jordan",
         "Kazakhstan", "Kenya", "Kiribati", "Korea, North", "Korea, South", "Kosovo", "Kuwait", "Kyrgyzstan",
@@ -180,6 +180,7 @@
             const groupSizeInput = document.getElementById("groupSize");
             const groupMembersDiv = document.getElementById("groupMembers");
 
+
             groupSizeInput.addEventListener("input", () => {
                 const numberOfMembers = parseInt(groupSizeInput.value, 10);
                 groupMembersDiv.innerHTML = "";
@@ -192,6 +193,7 @@
                         <h4>Member ${i}:</h4>
                         <label>Full Name:</label>
                         <input type="text" name="memberName${i}" placeholder="Enter full name" required>
+                       
 
                         <label>Date of Birth:</label>
                         <input type="date" name="memberDOB${i}" required>
