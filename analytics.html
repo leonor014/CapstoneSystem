@@ -6,187 +6,129 @@
     <title>Tourism Analytics</title>
     <link rel="stylesheet" href="css/analytics.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
 </head>
 <body>
-    <!-- Header -->
-    <header>
-        <h1>Tourism Analytics</h1>
-        <p>Discover insights about tourist visits and trends in Sagada</p>
-    </header>
 
-    <!-- Analytics Section -->
-    <div class="analytics-container">
-        <!-- Monthly Visitor Statistics -->
-        <div class="chart-title" onclick="toggleContent('visitorContent')">Monthly Visitor Statistics</div>
-        <div id="visitorContent" class="chart-content">
-            <canvas id="visitorChart"></canvas>
-        </div>
+<header>
+    <h1>Tourism Analytics</h1>
+    <p>Discover insights about tourist visits and trends in Sagada</p>
+</header>
 
-        <!-- Age Demographics -->
-        <div class="chart-title" onclick="toggleContent('ageContent')">Age Demographics</div>
-        <div id="ageContent" class="chart-content">
-            <canvas id="ageChart"></canvas>
-        </div>
+<div class="analytics-container">
 
-        <!-- Top 10 Nationalities -->
-        <div class="chart-title" onclick="toggleContent('originContent')">Top 10 Nationalities</div>
-        <div id="originContent" class="chart-content">
-            <canvas id="originChart"></canvas>
-        </div>
-
-        <!-- Gender Demographics -->
-        <div class="chart-title" onclick="toggleContent('genderContent')">Gender Demographics</div>
-        <div id="genderContent" class="chart-content">
-            <canvas id="genderChart"></canvas>
-        </div>
-
-        <!-- Site-Specific Analytics -->
-        <div class="site-title" onclick="toggleContent('sumaguingContent')">Sumaguing Cave Analytics</div>
-        <div id="sumaguingContent" class="site-content">
-            <div class="spot">
-                <img src="images/sumaguing-cave.jpg" alt="Sumaguing Cave">
-                <div class="spot-info">
-                    <h3>Sumaguing Cave</h3>
-                    <p>The most visited tourist spot known for its limestone formations and caving adventures.</p>
-                </div>
+    <!-- Monthly Statistics -->
+    <div class="site-title" onclick="toggleContent('monthlyContent')">Monthly</div>
+    <div id="monthlyContent" class="site-content">
+        <div class="spot">
+            <img src="images/sagada.jpg" alt="Monthly Statistics">
+            <div class="spot-info">
+                <h3>Monthly Statistics</h3>
+                <p>Which Month Does Tourists Mostly Visit?</p>
             </div>
-            <canvas id="sumaguingChart"></canvas>
         </div>
-
-        <div class="site-title" onclick="toggleContent('blueSoilContent')">Blue Soil Hills Analytics</div>
-        <div id="blueSoilContent" class="site-content">
-            <div class="spot">
-                <img src="images/blue-soil.jpg" alt="Blue Soil Hills">
-                <div class="spot-info">
-                    <h3>Blue Soil Hills</h3>
-                    <p>Popular among seniors for its serene atmosphere and stunning blue-colored hills.</p>
-                </div>
-            </div>
-            <canvas id="blueSoilChart"></canvas>
-        </div>
-
-        <div class="site-title" onclick="toggleContent('hangingCoffinsContent')">Hanging Coffins Analytics</div>
-        <div id="hangingCoffinsContent" class="site-content">
-            <div class="spot">
-                <img src="images/hanging-coffins.jpg" alt="Hanging Coffins">
-                <div class="spot-info">
-                    <h3>Hanging Coffins</h3>
-                    <p>Historical and cultural destination loved by families and children.</p>
-                </div>
-            </div>
-            <canvas id="hangingCoffinsChart"></canvas>
-        </div>
+        <canvas id="peakseasonMonth"></canvas>
     </div>
 
-    <!-- Back Button -->
-    <div style="text-align: center;">
-        <a href="sagada.html" class="back-button">Back to Home</a>
+    <!-- Sumaguing Cave Analytics -->
+    <div class="site-title" onclick="toggleContent('sumaguingContent')">Sumaguing Cave Analytics</div>
+    <div id="sumaguingContent" class="site-content">
+        <div class="spot">
+            <img src="images/sumaguing-cave.jpg" alt="Sumaguing Cave">
+            <div class="spot-info">
+                <h3>Sumaguing Cave</h3>
+                <p>The most visited tourist spot known for its limestone formations and caving adventures.</p>
+            </div>
+        </div>
+        <canvas id="sumaguingChart"></canvas>
+        <canvas id="sumaguingNationalityChart"></canvas>
+        <canvas id="sumaguingGenderChart"></canvas>
     </div>
 
-    <script>
-        // Function to toggle content visibility
-        function toggleContent(id) {
-            const content = document.getElementById(id);
-            if (content.style.display === "none" || content.style.display === "") {
-                content.style.display = "block";
-            } else {
-                content.style.display = "none";
-            }
+
+    <!-- Hanging Coffins Analytics -->
+    <div class="site-title" onclick="toggleContent('hangingCoffinsContent')">Hanging Coffins Analytics</div>
+    <div id="hangingCoffinsContent" class="site-content">
+        <div class="spot">
+            <img src="images/hanging-coffins.jpg" alt="Hanging Coffins">
+            <div class="spot-info">
+                <h3>Hanging Coffins</h3>
+                <p>A historical site where ancient burial traditions are visible in the cliffs of Sagada.</p>
+            </div>
+        </div>
+        <canvas id="hangingCoffinsChart"></canvas>
+        <canvas id="hangingCoffinsNationalityChart"></canvas>
+        <canvas id="hangingCoffinsGenderChart"></canvas>
+    </div>
+
+    <!-- Echo Valley Analytics -->
+    <div class="site-title" onclick="toggleContent('echoValleyContent')">Echo Valley Analytics</div>
+    <div id="echoValleyContent" class="site-content">
+        <div class="spot">
+            <img src="images/echo-valley.jpg" alt="Echo Valley">
+            <div class="spot-info">
+                <h3>Echo Valley</h3>
+                <p>A beautiful valley known for its reverberating sounds and cultural significance.</p>
+            </div>
+        </div>
+        <canvas id="echoValleyChart"></canvas>
+        <canvas id="echoValleyNationalityChart"></canvas>
+        <canvas id="echoValleyGenderChart"></canvas>
+    </div>
+</div>
+
+<a href="sagada.html" class="back-button">Back to Home</a>
+
+<script>
+    // Function to toggle content visibility
+    function toggleContent(id) {
+        const content = document.getElementById(id);
+        if (content.style.display === "none" || content.style.display === "") {
+            content.style.display = "block";
+        } else {
+            content.style.display = "none";
         }
+    }
 
-        // Charts for general analytics
-        const visitorCtx = document.getElementById('visitorChart').getContext('2d');
-        new Chart(visitorCtx, {
-            type: 'line',
+    // Chart.js Data for each site
+    const chartsData = [
+        // Monthly
+        {canvas: 'peakseasonMonth', type: 'line', labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], data: [300, 350, 500, 1000, 800, 912, 2100, 750, 650, 600, 550, 900], backgroundColor: 'rgba(30, 144, 255, 0.2)', borderColor: '#1e90ff'},
+
+        // Sumaguing Cave Charts
+        {canvas: 'sumaguingChart', type: 'line', labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], data: [250, 300, 400, 450, 550, 600, 500, 480, 460, 500, 530, 540], backgroundColor: 'rgba(34, 139, 34, 0.2)', borderColor: '#228B22'},
+        {canvas: 'sumaguingNationalityChart', type: 'bar', labels: ['USA', 'Japan', 'Australia', 'Philippines', 'France'], data: [100, 50, 280, 700, 250], backgroundColor: ['#32CD32', '#98FB98', '#006400', '#00FF00', '#228B22'], borderColor: '#228B22'},
+        {canvas: 'sumaguingGenderChart', type: 'pie', labels: ['Male', 'Female'], data: [320, 480], backgroundColor: ['#32CD32', '#006400']},
+
+
+        // Hanging Coffins Charts
+        {canvas: 'hangingCoffinsChart', type: 'line', labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], data: [250, 300, 400, 450, 550, 600, 500, 480, 460, 500, 530, 540], backgroundColor: 'rgba(34, 139, 34, 0.2)', borderColor: '#228B22'},
+        {canvas: 'hangingCoffinsNationalityChart', type: 'bar', labels: ['USA', 'Japan', 'Australia', 'Philippines', 'France'], data: [350, 320, 280, 300, 250], backgroundColor: ['#32CD32', '#98FB98', '#006400', '#00FF00', '#228B22'], borderColor: '#228B22'},
+        {canvas: 'hangingCoffinsGenderChart', type: 'pie', labels: ['Male', 'Female'], data: [320, 480], backgroundColor: ['#32CD32', '#006400']},
+
+        // Echo Valley Charts
+        {canvas: 'echoValleyChart', type: 'line', labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], data: [150, 180, 230, 280, 350, 400, 380, 360, 310, 290, 270, 250], backgroundColor: 'rgba(255, 99, 132, 0.2)', borderColor: '#ff6384'},
+        {canvas: 'echoValleyNationalityChart', type: 'bar', labels: ['USA', 'China', 'Australia', 'UK', 'India'], data: [550, 490, 430, 420, 370], backgroundColor: ['#ff6384', '#ff4f58', '#ff7f6d', '#ffb3b3', '#ff99cc'], borderColor: '#ff6384'},
+        {canvas: 'echoValleyGenderChart', type: 'pie', labels: ['Male', 'Female'], data: [400, 600], backgroundColor: ['#ff6384', '#ffb3b3']},
+    ];
+
+    // Initialize each chart using the data above
+    chartsData.forEach(chartData => {
+        const ctx = document.getElementById(chartData.canvas).getContext('2d');
+        new Chart(ctx, {
+            type: chartData.type,
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                labels: chartData.labels,
                 datasets: [{
-                    label: 'Visitors',
-                    data: [500, 600, 800, 1000, 1500, 2000, 1800, 1700, 1400, 1200, 1000, 900],
-                    borderColor: '#1e90ff',
-                    backgroundColor: 'rgba(30, 144, 255, 0.2)',
+                    data: chartData.data,
+                    backgroundColor: chartData.backgroundColor,
+                    borderColor: chartData.borderColor,
+                    borderWidth: 1
                 }]
             }
         });
+    });
+</script>
 
-        // Age Demographics Chart
-        const ageCtx = document.getElementById('ageChart').getContext('2d');
-        new Chart(ageCtx, {
-            type: 'pie',
-            data: {
-                labels: ['Infant (0-2)', 'Children (3-17)', 'Young Adults (18-39)', 'Middle-Age Adults (40-59)', 'Seniors (60+)'],
-                datasets: [{
-                    label: 'Age Demographics',
-                    data: [15, 70, 15, 20, 25],
-                    backgroundColor: ['#1e90ff', '#87cefa', '#104e8b', '#4682b4', '#00bfff']
-                }]
-            }
-        });
-
-        // Top 10 Nationalities Chart
-        const originCtx = document.getElementById('originChart').getContext('2d');
-        new Chart(originCtx, {
-            type: 'bar',
-            data: {
-                labels: ['USA', 'Japan', 'China', 'Australia', 'UK', 'Germany', 'Canada', 'South Korea', 'India', 'France'],
-                datasets: [{
-                    label: 'Visitor Count',
-                    data: [1200, 1100, 1050, 1000, 950, 900, 850, 800, 750, 700],
-                    backgroundColor: ['#1e90ff', '#87cefa', '#4682b4', '#00bfff', '#104e8b', '#1e90ff', '#87cefa', '#4682b4', '#00bfff', '#104e8b']
-                }]
-            }
-        });
-
-        // Gender Demographics Chart
-        const genderCtx = document.getElementById('genderChart').getContext('2d');
-        new Chart(genderCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Male', 'Female'],
-                datasets: [{
-                    data: [800, 1000],
-                    backgroundColor: ['#1e90ff', '#104e8b']
-                }]
-            }
-        });
-
-        // Additional site-specific charts
-        const sumaguingCtx = document.getElementById('sumaguingChart').getContext('2d');
-        new Chart(sumaguingCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Infant (0-2)', 'Children (3-17)', 'Young Adults (18-39)', 'Middle-Age Adults (40-59)', 'Seniors (60+)'],
-                datasets: [{
-                    label: 'Visitors by Age',
-                    data: [5, 20, 80, 50, 2],
-                    backgroundColor: ['#1e90ff', '#87cefa', '#104e8b', '#4682b4', '#00bfff']
-                }]
-            }
-        });
-
-        const blueSoilCtx = document.getElementById('blueSoilChart').getContext('2d');
-        new Chart(blueSoilCtx, {
-            type: 'pie',
-            data: {
-                labels: ['Infant (0-2)', 'Children (3-17)', 'Young Adults (18-39)', 'Middle-Age Adults (40-59)', 'Seniors (60+)'],
-                datasets: [{
-                    data: [30, 50, 200, 150, 30],
-                    backgroundColor: ['#1e90ff', '#87cefa', '#104e8b', '#4682b4', '#00bfff']
-                }]
-            }
-        });
-
-        const hangingCoffinsCtx = document.getElementById('hangingCoffinsChart').getContext('2d');
-        new Chart(hangingCoffinsCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Infant (0-2)', 'Children (3-17)', 'Young Adults (18-39)', 'Middle-Age Adults (40-59)', 'Seniors (60+)'],
-                datasets: [{
-                    data: [20, 50, 250, 150, 30],
-                    backgroundColor: ['#1e90ff', '#87cefa', '#104e8b', '#4682b4', '#00bfff']
-                }]
-            }
-        });
-    </script>
 </body>
 </html>
