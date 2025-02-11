@@ -21,13 +21,24 @@
     <div class="site-title" onclick="toggleContent('monthlyContent')">Monthly</div>
     <div id="monthlyContent" class="site-content">
         <div class="spot">
-            <img src="images/sagada.jpg" alt="Monthly Statistics">
             <div class="spot-info">
                 <h3>Monthly Statistics</h3>
                 <p>Which Month Does Tourists Mostly Visit?</p>
             </div>
         </div>
         <canvas id="peakseasonMonth"></canvas>
+    </div>
+
+    <!-- Sex Analytics  -->
+    <div class="site-title" onclick="toggleContent('sexContent')">Sex Demographics</div>
+    <div id="sexContent" class="site-content">
+        <div class="spot">
+            <div class="spot-info">
+                <h3>Sex Demographics</h3>
+                <p>Whhich Population is most Common?</p>
+            </div>
+        </div>
+        <canvas id="SexDemog"></canvas>
     </div>
 
     <!-- Sumaguing Cave Analytics -->
@@ -61,19 +72,19 @@
         <canvas id="hangingCoffinsGenderChart"></canvas>
     </div>
 
-    <!-- Echo Valley Analytics -->
-    <div class="site-title" onclick="toggleContent('echoValleyContent')">Echo Valley Analytics</div>
-    <div id="echoValleyContent" class="site-content">
+    <!-- Bomod-ok Falls Analytics -->
+    <div class="site-title" onclick="toggleContent('bomod-okContent')">Bomod-ok Falls Analytics</div>
+    <div id="bomod-okContent" class="site-content">
         <div class="spot">
-            <img src="images/echo-valley.jpg" alt="Echo Valley">
+            <img src="images/bomod-ok-falls.jpg" alt="Bomod-ok Falls">
             <div class="spot-info">
-                <h3>Echo Valley</h3>
-                <p>A beautiful valley known for its reverberating sounds and cultural significance.</p>
+                <h3>Bomod-ok Falls</h3>
+                <p>A Refreshing waterfall stands about 200 feet (60 meters) high, cascading into a refreshing natural pool surrounded by lush greenery and towering rock formations.</p>
             </div>
         </div>
-        <canvas id="echoValleyChart"></canvas>
-        <canvas id="echoValleyNationalityChart"></canvas>
-        <canvas id="echoValleyGenderChart"></canvas>
+        <canvas id="bomod-okChart"></canvas>
+        <canvas id="bomod-okNationalityChart"></canvas>
+        <canvas id="bomod-okGenderChart"></canvas>
     </div>
 </div>
 
@@ -95,6 +106,9 @@
         // Monthly
         {canvas: 'peakseasonMonth', type: 'line', labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], data: [300, 350, 500, 1000, 800, 912, 2100, 750, 650, 600, 550, 900], backgroundColor: 'rgba(30, 144, 255, 0.2)', borderColor: '#1e90ff'},
 
+        // Sex Demographics       
+        {canvas: 'SexDemog', type: 'pie', labels: ['Male', 'Female'], data: [200, 600], backgroundColor: ['#ff6384', '#ffb3b3']},
+
         // Sumaguing Cave Charts
         {canvas: 'sumaguingChart', type: 'line', labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], data: [250, 300, 400, 450, 550, 600, 500, 480, 460, 500, 530, 540], backgroundColor: 'rgba(34, 139, 34, 0.2)', borderColor: '#228B22'},
         {canvas: 'sumaguingNationalityChart', type: 'bar', labels: ['USA', 'Japan', 'Australia', 'Philippines', 'France'], data: [100, 50, 280, 700, 250], backgroundColor: ['#32CD32', '#98FB98', '#006400', '#00FF00', '#228B22'], borderColor: '#228B22'},
@@ -107,9 +121,9 @@
         {canvas: 'hangingCoffinsGenderChart', type: 'pie', labels: ['Male', 'Female'], data: [320, 480], backgroundColor: ['#32CD32', '#006400']},
 
         // Echo Valley Charts
-        {canvas: 'echoValleyChart', type: 'line', labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], data: [150, 180, 230, 280, 350, 400, 380, 360, 310, 290, 270, 250], backgroundColor: 'rgba(255, 99, 132, 0.2)', borderColor: '#ff6384'},
-        {canvas: 'echoValleyNationalityChart', type: 'bar', labels: ['USA', 'China', 'Australia', 'UK', 'India'], data: [550, 490, 430, 420, 370], backgroundColor: ['#ff6384', '#ff4f58', '#ff7f6d', '#ffb3b3', '#ff99cc'], borderColor: '#ff6384'},
-        {canvas: 'echoValleyGenderChart', type: 'pie', labels: ['Male', 'Female'], data: [400, 600], backgroundColor: ['#ff6384', '#ffb3b3']},
+        {canvas: 'bomod-okChart', type: 'line', labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], data: [150, 180, 230, 280, 350, 400, 380, 360, 310, 290, 270, 250], backgroundColor: 'rgba(255, 99, 132, 0.2)', borderColor: '#ff6384'},
+        {canvas: 'bomod-okNationalityChart', type: 'bar', labels: ['USA', 'China', 'Australia', 'UK', 'India'], data: [550, 490, 430, 420, 370], backgroundColor: ['#ff6384', '#ff4f58', '#ff7f6d', '#ffb3b3', '#ff99cc'], borderColor: '#ff6384'},
+        {canvas: 'bomod-okGenderChart', type: 'pie', labels: ['Male', 'Female'], data: [400, 600], backgroundColor: ['#ff6384', '#ffb3b3']},
     ];
 
     // Initialize each chart using the data above
