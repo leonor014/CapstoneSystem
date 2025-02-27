@@ -29,6 +29,20 @@
         <canvas id="peakseasonMonth"></canvas>
     </div>
 
+    <!-- Top 10 Non-Filipino Tourists -->
+    <div class="site-title" onclick="toggleContent('nonFilipinoContent')">Top 10 Non-Filipino Tourists</div>
+    <div id="nonFilipinoContent" class="site-content">
+        <h3>Top 10 Non-Filipino Tourists</h3>
+        <canvas id="topNonFilipinoTourists"></canvas>
+    </div>
+
+    <!-- Top 10 Philippine Regions -->
+    <div class="site-title" onclick="toggleContent('topRegionsContent')">Top 10 Philippine Regions</div>
+    <div id="topRegionsContent" class="site-content">
+        <h3>Top 10 Philippine Regions of Registered Tourists</h3>
+        <canvas id="topPhilippineRegions"></canvas>
+    </div>
+
     <!-- Sex Analytics  -->
     <div class="site-title" onclick="toggleContent('sexContent')">Sex Demographics</div>
     <div id="sexContent" class="site-content">
@@ -88,7 +102,10 @@
     </div>
 </div>
 
-<a href="sagada.html" class="back-button">Back to Home</a>
+<div style="text-align: center;">
+    <a href="sagada.html" class="back-button">Back to Home</a>
+</div>
+
 
 <script>
     // Function to toggle content visibility
@@ -108,6 +125,12 @@
 
         // Sex Demographics       
         {canvas: 'SexDemog', type: 'pie', labels: ['Male', 'Female'], data: [200, 600], backgroundColor: ['#ff6384', '#ffb3b3']},
+
+        // Top 10 Non-Filipino Tourists
+        {canvas: 'topNonFilipinoTourists', type: 'bar', labels: ['USA', 'Japan', 'Australia', 'China', 'Germany', 'France', 'UK', 'Canada', 'India', 'South Korea'], data: [500, 450, 400, 350, 300, 250, 200, 150, 100, 90], backgroundColor: '#32CD32'},
+        
+        // Top 10 Philippine Regions
+        {canvas: 'topPhilippineRegions', type: 'bar', labels: ['NCR', 'Region IV-A', 'Region III', 'Region VII', 'Region XI', 'Region VI', 'Region X', 'Region IX', 'Region V', 'Region I'], data: [800, 750, 700, 650, 600, 550, 500, 450, 400, 350], backgroundColor: '#ff6384'},
 
         // Sumaguing Cave Charts
         {canvas: 'sumaguingChart', type: 'line', labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], data: [250, 300, 400, 450, 550, 600, 500, 480, 460, 500, 530, 540], backgroundColor: 'rgba(34, 139, 34, 0.2)', borderColor: '#228B22'},
