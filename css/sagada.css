@@ -75,8 +75,6 @@ header .catalog-banner {
     text-align: center;
 }
 
-
-
 /* Navigation Bar */
 nav {
     background-color: #2e7d32;
@@ -85,7 +83,7 @@ nav {
 }
 
 nav a {
-    color: white;
+    color: rgb(248, 243, 243);
     text-decoration: none;
     margin: 0 1rem;
     font-weight: bold;
@@ -267,3 +265,4 @@ footer {
     color: white;
     margin-top: 20px;
 }
+

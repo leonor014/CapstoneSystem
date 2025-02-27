@@ -12,12 +12,7 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Notice</h2>
-            <p>Welcome to the Tourist Registration Portal. 
-                By proceeding, you agree to provide accurate 
-                information for the purpose of registration. 
-                This information will be used to facilitate 
-                your travel and ensure your safety during 
-                your visit.</p>
+            <p>Welcome to the Tourist Registration Portal. By proceeding, you agree to provide accurate information for the purpose of registration. This information will be used to facilitate your travel and ensure your safety during your visit.</p>
             <button id="acknowledgeButton">I Understand</button>
         </div>
     </div>
@@ -78,7 +73,6 @@
                 <input type="file" id="uploadPhoto" accept="image/*" required>
                 <span class="error-message" id="uploadPhotoError"></span>
             </div>
-            
 
             <div id="groupForm" style="display:none;">
                 <label>Date of Registration</label>
@@ -123,8 +117,6 @@
             <button type="submit">Register</button>
         </form>
 
-        
-
         <!-- Display registration number here -->
         <div id="registrationDisplay" style="display:none;">
             <h2>Registration Successful</h2>
@@ -135,31 +127,34 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            // Modal and other initializations...
-            const modal = document.getElementById("noticeModal");
-            const acknowledgeButton = document.getElementById("acknowledgeButton");
-            const closeButton = document.querySelector(".close");
+            // Get the modal
+            var modal = document.getElementById("noticeModal");
 
-            // Show modal on page load
+            // Get the button that opens the modal
+            var acknowledgeButton = document.getElementById("acknowledgeButton");
+
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0];
+
+            // When the page loads, show the modal
             modal.style.display = "block";
 
-            // Close modal when user clicks "I Understand"
-            acknowledgeButton.onclick = function () {
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
                 modal.style.display = "none";
-            };
+            }
 
-            // Close modal when user clicks the close button
-            closeButton.onclick = function () {
+            // When the user clicks on the "I Understand" button, close the modal
+            acknowledgeButton.onclick = function() {
                 modal.style.display = "none";
-            };
+            }
 
-            // Close modal when user clicks outside the modal
-            window.onclick = function (event) {
-                if (event.target === modal) {
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
                     modal.style.display = "none";
                 }
-            };
-       
+            }
 
             
             const countrySelect = document.getElementById("country");
@@ -256,7 +251,6 @@
                 });
             }
 
-
             // Update regions and phone number based on selected country
             function updateCountrySelection(selectElement, phoneInput, regionSelect) {
                 selectElement.addEventListener("change", function () {
@@ -338,11 +332,10 @@
                                 errorElement.style.display = "none";
                                 this.classList.remove("error-input");
                             }
-                        });
-                    };
-                });          
+                        });          
+                    }
+                });
             }
-            
 
             // Validation functions
             function validateDateOfRegistration(date) {
@@ -484,8 +477,6 @@
 
             // Add event listeners for validation
             document.getElementById("registrationForm").addEventListener("submit", function (event) {
-                event.preventDefault();
-
                 const isGroup = document.getElementById("groupRegistration").value === "group";
                 const dateOfRegistration = isGroup ? document.getElementById("groupDateOfRegistration").value : document.getElementById("dateOfRegistration").value;
                 const fullName = isGroup ? document.getElementById("groupName").value : document.getElementById("fullName").value;
@@ -555,86 +546,133 @@
                     document.getElementById("groupSizeError").style.display = "none";
                     document.getElementById("groupSize").classList.remove("error-input");
                 }
-
                 
-                
-            // Handle form submission
-            document.getElementById("registrationForm").addEventListener("submit", function (event) {
-                event.preventDefault(); // Prevent default form submission
-
-                const isGroup = document.getElementById("groupRegistration").value === "group";
-                const formToValidate = isGroup ? document.getElementById("groupForm") : document.getElementById("individualForm");
-
-                // Check if any required field is empty
-                let isValid = true;
-                const requiredFields = formToValidate.querySelectorAll("[required]");
-                requiredFields.forEach(field => {
-                if (!field.value.trim()) {
+                // Validate based on registration type (individual or group)
+                if (isGroup) {
+                // Validate Group Name
+                    const groupName = document.getElementById("groupName").value;
+                if (!validateFullName(groupName)) {
+                    document.getElementById("groupNameError").textContent = "Group name must contain at least two words with letters only.";
+                    document.getElementById("groupNameError").style.display = "block";
+                    document.getElementById("groupName").classList.add("error-input");
                     isValid = false;
-                    field.classList.add("error-input");
-                    const errorElement = document.getElementById(`${field.id}Error`);
-                    if (errorElement) {
-                        errorElement.textContent = "This field is required.";
-                        errorElement.style.display = "block";
-                    }
                 } else {
-                    field.classList.remove("error-input");
-                    const errorElement = document.getElementById(`${field.id}Error`);
-                    if (errorElement) {
-                    errorElement.style.display = "none";
-                    }
+                    document.getElementById("groupNameError").style.display = "none";
+                    document.getElementById("groupName").classList.remove("error-input");
+                }
+
+                // Validate Group Size
+                const groupSize = parseInt(document.getElementById("groupSize").value, 10);
+                if (!validateGroupSize(groupSize)) {
+                    document.getElementById("groupSizeError").textContent = "Number of members should be at least 2.";
+                    document.getElementById("groupSizeError").style.display = "block";
+                    document.getElementById("groupSize").classList.add("error-input");
+                    isValid = false;
+                } else {
+                    document.getElementById("groupSizeError").style.display = "none";
+                    document.getElementById("groupSize").classList.remove("error-input");
+                }
+
+                // Validate Group Members
+                const numberOfMembers = parseInt(document.getElementById("groupSize").value, 10);
+                for (let i = 1; i <= numberOfMembers; i++) {
+                    const memberName = document.querySelector(`input[name='memberName${i}']`).value;
+                    const memberDOB = document.querySelector(`input[name='memberDOB${i}']`).value;
+
+                if (!validateFullName(memberName)) {
+                    document.getElementById(`memberName${i}Error`).textContent = "Full name must contain at least two words with letters only.";
+                    document.getElementById(`memberName${i}Error`).style.display = "block";
+                    document.querySelector(`input[name='memberName${i}']`).classList.add("error-input");
+                    isValid = false;
+                } else {
+                    document.getElementById(`memberName${i}Error`).style.display = "none";
+                    document.querySelector(`input[name='memberName${i}']`).classList.remove("error-input");
+                }
+
+                if (!validateDateOfBirth(memberDOB)) {
+                    document.getElementById(`memberDOB${i}Error`).textContent = "Date of birth should not be more than 150 years old.";
+                    document.getElementById(`memberDOB${i}Error`).style.display = "block";
+                    document.querySelector(`input[name='memberDOB${i}']`).classList.add("error-input");
+                    isValid = false;
+                } else {
+                    document.getElementById(`memberDOB${i}Error`).style.display = "none";
+                    document.querySelector(`input[name='memberDOB${i}']`).classList.remove("error-input");
+                }
+                }
+
+                // Validate Group Email
+                const groupEmail = document.getElementById("groupEmail").value;
+                if (!validateEmail(groupEmail)) {
+                    document.getElementById("groupEmailError").textContent = "Please enter a valid email address with a valid domain (e.g., gmail.com, yahoo.com, outlook.com).";
+                    document.getElementById("groupEmailError").style.display = "block";
+                    document.getElementById("groupEmail").classList.add("error-input");
+                    isValid = false;
+                } else {
+                    document.getElementById("groupEmailError").style.display = "none";
+                    document.getElementById("groupEmail").classList.remove("error-input");
+                }
+                } else {
+                // Validate Individual Registration
+                    const fullName = document.getElementById("fullName").value;
+                    const dateOfBirth = document.getElementById("dateOfBirth").value;
+                    const email = document.getElementById("email").value;
+
+                if (!validateFullName(fullName)) {
+                    document.getElementById("fullNameError").textContent = "Full name must contain at least two words with letters only.";
+                    document.getElementById("fullNameError").style.display = "block";
+                    document.getElementById("fullName").classList.add("error-input");
+                    isValid = false;
+                } else {
+                    document.getElementById("fullNameError").style.display = "none";
+                    document.getElementById("fullName").classList.remove("error-input");
+                }
+
+                if (!validateDateOfBirth(dateOfBirth)) {
+                    document.getElementById("dateOfBirthError").textContent = "Date of birth should not be more than 150 years old.";
+                    document.getElementById("dateOfBirthError").style.display = "block";
+                    document.getElementById("dateOfBirth").classList.add("error-input");
+                    isValid = false;
+                } else {
+                    document.getElementById("dateOfBirthError").style.display = "none";
+                    document.getElementById("dateOfBirth").classList.remove("error-input");
+                }
+
+                if (!validateEmail(email)) {
+                    document.getElementById("emailError").textContent = "Please enter a valid email address with a valid domain (e.g., gmail.com, yahoo.com, outlook.com).";
+                    document.getElementById("emailError").style.display = "block";
+                    document.getElementById("email").classList.add("error-input");
+                    isValid = false;
+                } else {
+                    document.getElementById("emailError").style.display = "none";
+                    document.getElementById("email").classList.remove("error-input");
+                }
+                }
+
+                if (!isValid) {
+                    event.preventDefault();
+                } else {
+                    alert(`Your Application is being uploaded, Please stand by...`);
+                }
+
+                //Submit button
+                if (isValid) {        
+                    // Generate the registration number
+                    const registrationNumber = `REG-${Date.now()}${isGroup ? "-G" : "-I"}`;
+
+                    // Display the registration number in an alert
+                    alert(`Your registration number is: ${registrationNumber}`);
+
+                    // Hide the individual or group form based on the selection
+                    document.getElementById("individualForm").style.display = "none";
+                    document.getElementById("groupForm").style.display = "none";
+
+                    // Reset the form to blank
+                    document.getElementById("registrationForm").reset();
+                } else {
+                    alert("Please fix the errors in the form before submitting.");
                 }
             });
-
-            // Validate dynamically generated group member fields
-            if (isGroup) {
-                const groupSize = parseInt(document.getElementById("groupSize").value, 10);
-                for (let i = 1; i <= groupSize; i++) {
-                    const memberName = document.querySelector(`input[name='memberName${i}']`);
-                    const memberDOB = document.querySelector(`input[name='memberDOB${i}']`);
-                    const memberSex = document.querySelector(`select[name='memberSex${i}']`);
-
-                    if (!memberName.value.trim()) {
-                        isValid = false;
-                        memberName.classList.add("error-input");
-                        document.getElementById(`memberName${i}Error`).textContent = "This field is required.";
-                        document.getElementById(`memberName${i}Error`).style.display = "block";
-                    }
-                    if (!memberDOB.value.trim()) {
-                        isValid = false;
-                        memberDOB.classList.add("error-input");
-                        document.getElementById(`memberDOB${i}Error`).textContent = "This field is required.";
-                        document.getElementById(`memberDOB${i}Error`).style.display = "block";
-                    }
-                    if (!memberSex.value.trim()) {
-                        isValid = false;
-                        memberSex.classList.add("error-input");
-                        document.getElementById(`memberSex${i}Error`).textContent = "This field is required.";
-                        document.getElementById(`memberSex${i}Error`).style.display = "block";
-                    }
-                }
-            }
-
-            // If form is valid, generate registration number
-            if (isValid) {
-                const registrationNumber = `REG-${Date.now()}${isGroup ? "-G" : "-I"}`;
-                document.getElementById("displayRegistrationNumber").textContent = registrationNumber;
-                document.getElementById("registrationDisplay").style.display = "block";
-
-                // Hide the form and show the registration number
-                document.getElementById("individualForm").style.display = "none";
-                document.getElementById("groupForm").style.display = "none";
-
-                // Reset the form to blank
-                document.getElementById("registrationForm").reset();
-            } else {
-                alert("Please fill out all required fields.");
-            }
-        });
     });
-});
-
-
     </script>
 </body>
 </html>

@@ -6,7 +6,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyCt1EginvMZvYdlrseVPBiyvfto4bvED5Y",
     authDomain: "sagadatouristregister.firebaseapp.com",
     projectId: "sagadatouristregister",
-    storageBucket: "sagadatouristregister.firebasestorage.app",
+    storageBucket: "sagadatouristregister.appspot.com",
     messagingSenderId: "875774905793",
     appId: "1:875774905793:web:d4fe2ea42fedba8d473340",
     measurementId: "G-2VF5GCQGZ1"
@@ -26,7 +26,7 @@ document.getElementById("registrationForm").addEventListener("submit", function 
     
     const formData = {
         registrationNumber: registrationNumber,
-        dateOfRegistration: document.getElementById("dateOfRegistration").value,
+        dateOfRegistration: isGroup ? document.getElementById("groupDateOfRegistration").value : document.getElementById("dateOfRegistration").value,
         registrationType: isGroup ? "group" : "individual",
     };
 
@@ -35,7 +35,7 @@ document.getElementById("registrationForm").addEventListener("submit", function 
         formData.groupSize = document.getElementById("groupSize").value;
         formData.groupCountry = document.getElementById("groupCountry").value;
         formData.groupRegion = document.getElementById("groupRegion").value;
-        formData.groupContact = document.getElementById("groupContact").value;
+        formData.groupContact = document.getElementById("groupPhone").value; // Corrected ID
         formData.groupEmail = document.getElementById("groupEmail").value;
 
         const members = [];
@@ -53,7 +53,7 @@ document.getElementById("registrationForm").addEventListener("submit", function 
         formData.sex = document.getElementById("sex").value;
         formData.country = document.getElementById("country").value;
         formData.region = document.getElementById("region").value;
-        formData.contactNumber = document.getElementById("contactNumber").value;
+        formData.contactNumber = document.getElementById("phone").value; // Corrected ID
         formData.email = document.getElementById("email").value;
     }
 
@@ -89,6 +89,7 @@ function submitToFirestore(formData, registrationNumber) {
         })
         .catch((error) => {
             console.error("Error adding document: ", error);
+            alert("Failed to submit registration. Please try again.");
         });
 }
 

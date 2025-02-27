@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tourist Registration</title>
+    <link rel="stylesheet" href="css/register.css">
+    <script type="module" src="js/registration.js"></script>
+    <style>
+        .error-message {
+            color: red;
+            display: none;
+        }
+        .error-input {
+            border: 1px solid red;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- The Modal -->
+    <div id="noticeModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Notice</h2>
+            <p>Welcome to the Tourist Registration Portal. By proceeding, you agree to provide accurate information for the purpose of registration. This information will be used to facilitate your travel and ensure your safety during your visit.</p>
+            <button id="acknowledgeButton">I Understand</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Tourist Registration</h1>
+
+        <form id="registrationForm">
+            <label>Are you registering for an/a?</label>
+            <select id="groupRegistration" required>
+                <option value="">Select an option</option>
+                <option value="individual">Individual</option>
+                <option value="group">Group</option>
+            </select>
+
+            <div id="individualForm" style="display:none;">
+                <label>Date of Registration</label>
+                <input type="date" id="dateOfRegistration" placeholder="Enter date of registration" required>
+                <span class="error-message" id="dateOfRegistrationError"></span>
+
+                <label>Full Name:</label>
+                <input type="text" id="fullName" placeholder="Enter your full name" required>
+                <span class="error-message" id="fullNameError"></span>
+
+                <label>Date of Birth:</label>
+                <input type="date" id="dateOfBirth" required>
+                <span class="error-message" id="dateOfBirthError"></span>
+
+                <label>Sex:</label>
+                <select id="sex" required>
+                    <option value="">Select sex</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+                <span class="error-message" id="sexError"></span>
+
+                <label>Country of Origin:</label>
+                <select id="country" required>
+                    <option value="">Select Country</option>
+                </select>
+                <span class="error-message" id="countryError"></span>
+
+                <label>Region:</label>
+                <select id="region" required>
+                    <option value="">Select Region</option>
+                </select>
+                <span class="error-message" id="regionError"></span>
+
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" placeholder="+" required>
+                <span class="error-message" id="phoneError"></span>
+
+                <label>Email:</label>
+                <input type="email" id="email" placeholder="Enter your email" required>
+                <span class="error-message" id="emailError"></span>
+
+                <label>Upload Photo:</label>
+                <input type="file" id="uploadPhoto" accept="image/*" required>
+                <span class="error-message" id="uploadPhotoError"></span>
+            </div>
+
+            <div id="groupForm" style="display:none;">
+                <label>Date of Registration</label>
+                <input type="date" id="groupDateOfRegistration" placeholder="Enter date of registration" required>
+                <span class="error-message" id="groupDateOfRegistrationError"></span>
+
+                <label>Group Name:</label>
+                <input type="text" id="groupName" placeholder="Enter group name" required>
+                <span class="error-message" id="groupNameError"></span>
+
+                <label>Number of Members:</label>
+                <input type="number" id="groupSize" placeholder="Enter the number of members" required>
+                <span class="error-message" id="groupSizeError"></span>
+
+                <div id="groupMembers"></div>
+
+                <label>Country of Origin:</label>
+                <select id="groupCountry" required>
+                    <option value="">Select Country</option>
+                </select>
+                <span class="error-message" id="groupCountryError"></span>
+
+                <label>Region:</label>
+                <select id="groupRegion" required>
+                    <option value="">Select Region</option>
+                </select>
+                <span class="error-message" id="groupRegionError"></span>
+
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="groupPhone" placeholder="+" required>
+                <span class="error-message" id="groupPhoneError"></span>
+
+                <label>Email:</label>
+                <input type="email" id="groupEmail" placeholder="Enter email (or select Not Applicable)" required>
+                <span class="error-message" id="groupEmailError"></span>
+
+                <label>Upload Group Photo:</label>
+                <input type="file" id="groupPhoto" accept="image/*" required>
+                <span class="error-message" id="groupPhotoError"></span>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <!-- Display registration number here -->
+        <div id="registrationDisplay" style="display:none;">
+            <h2>Registration Successful</h2>
+            <p><strong>Registration Number:</strong> <span id="displayRegistrationNumber"></span></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Modal and other initializations...
+            const modal = document.getElementById("noticeModal");
+            const acknowledgeButton = document.getElementById("acknowledgeButton");
+            const closeButton = document.querySelector(".close");
+
+            // Show modal on page load
+            modal.style.display = "block";
+
+            // Close modal when user clicks "I Understand"
+            acknowledgeButton.onclick = function () {
+                modal.style.display = "none";
+            };
+
+            // Close modal when user clicks the close button
+            closeButton.onclick = function () {
+                modal.style.display = "none";
+            };
+
+            // Close modal when user clicks outside the modal
+            window.onclick = function (event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            };
+
+            // Handle group or individual selection
+            const groupRegistration = document.getElementById("groupRegistration");
+            groupRegistration.addEventListener("change", function () {
+                const individualForm = document.getElementById("individualForm");
+                const groupForm = document.getElementById("groupForm");
+
+                if (this.value === "individual") {
+                    individualForm.style.display = "block";
+                    groupForm.style.display = "none";
+                } else if (this.value === "group") {
+                    individualForm.style.display = "none";
+                    groupForm.style.display = "block";
+                    generateGroupMemberFields();
+                } else {
+                    individualForm.style.display = "none";
+                    groupForm.style.display = "none";
+                }
+            });
+
+            // Generate group member fields
+            function generateGroupMemberFields() {
+                const groupSizeInput = document.getElementById("groupSize");
+                const groupMembersDiv = document.getElementById("groupMembers");
+
+                groupSizeInput.addEventListener("input", () => {
+                    const numberOfMembers = parseInt(groupSizeInput.value, 10);
+                    groupMembersDiv.innerHTML = "";
+
+                    for (let i = 1; i <= numberOfMembers; i++) {
+                        const memberDiv = document.createElement("div");
+                        memberDiv.style.marginBottom = "15px";
+
+                        memberDiv.innerHTML = `
+                            <h4>Member ${i}:</h4>
+                            <label>Full Name:</label>
+                            <input type="text" name="memberName${i}" placeholder="Enter full name" required>
+                            <span class="error-message" id="memberName${i}Error"></span>
+
+                            <label>Date of Birth:</label>
+                            <input type="date" name="memberDOB${i}" required>
+                            <span class="error-message" id="memberDOB${i}Error"></span>
+
+                            <label>Sex:</label>
+                            <select name="memberSex${i}" required>
+                                <option value="">Select sex</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                            <span class="error-message" id="memberSex${i}Error"></span>
+                        `;
+
+                        groupMembersDiv.appendChild(memberDiv);
+                    }
+                });
+            }
+
+            // Handle form submission
+            document.getElementById("registrationForm").addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const isGroup = document.getElementById("groupRegistration").value === "group";
+                const formToValidate = isGroup ? document.getElementById("groupForm") : document.getElementById("individualForm");
+
+                // Check if any required field is empty
+                let isValid = true;
+                const requiredFields = formToValidate.querySelectorAll("[required]");
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add("error-input");
+                        const errorElement = document.getElementById(`${field.id}Error`);
+                        if (errorElement) {
+                            errorElement.textContent = "This field is required.";
+                            errorElement.style.display = "block";
+                        }
+                    } else {
+                        field.classList.remove("error-input");
+                        const errorElement = document.getElementById(`${field.id}Error`);
+                        if (errorElement) {
+                            errorElement.style.display = "none";
+                        }
+                    }
+                });
+
+                // If form is valid, generate registration number
+                if (isValid) {
+                    const registrationNumber = `REG-${Date.now()}${isGroup ? "-G" : "-I"}`;
+                    document.getElementById("displayRegistrationNumber").textContent = registrationNumber;
+                    document.getElementById("registrationDisplay").style.display = "block";
+
+                    // Hide the form and show the registration number
+                    document.getElementById("individualForm").style.display = "none";
+                    document.getElementById("groupForm").style.display = "none";
+                } else {
+                    alert("Please fill out all required fields.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
